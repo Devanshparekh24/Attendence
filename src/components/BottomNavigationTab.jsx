@@ -1,47 +1,88 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+// Screens
 import HomeScreen from '../screens/HomeScreen';
-import Demo from '../screens/Demo';
 import AttendanceScreen from '../screens/AttendanceScreen';
-import SettingsScreen from '../screens/SettingsScreen'; 
+import VisitScreen from '../screens/VisitScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import Demo from '../screens/Demo'; // Keeping Demo if needed, or replace/remove
 
 const BottomTab = createBottomTabNavigator();
 
+const SCREENS = {
+    Home: {
+        component: HomeScreen,
+        label: 'Home',
+        icon: 'home',
+    },
+    Attendance: {
+        component: AttendanceScreen,
+        label: 'Attendance',
+        icon: 'calendar',
+    },
+    Visit: {
+        component: VisitScreen,
+        label: 'Visit',
+        icon: 'location',
+    },
+    Settings: {
+        component: SettingsScreen,
+        label: 'Settings',
+        icon: 'settings',
+    },
+    Demo: {
+        component: Demo,
+        label: 'Demo',
+        icon: 'list',
+    },
+};
 
 const BottomNavigationTab = () => {
     return (
         <BottomTab.Navigator
             screenOptions={({ route }) => ({
+                headerShown: true,
+                tabBarActiveTintColor: 'blue',
+                tabBarInactiveTintColor: 'gray',
+                tabBarStyle: {
+                    paddingBottom: 5,
+                    height: 60,
+                    backgroundColor: '#fff',
+                    borderTopWidth: 0.5,
+                    borderTopColor: '#e0e0e0'
+                },
+                tabBarLabelStyle: {
+                    fontSize: 10,
+                    fontWeight: '500',
+                    marginBottom: 4,
+                },
                 tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
+                    const screenConfig = SCREENS[route.name];
+                    if (!screenConfig) return null;
 
-                    if (route.name === 'HomeScreen') {
-                        iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Demo') {
-                        iconName = focused ? 'list' : 'list-outline';
-                    } else if (route.name === 'AttendanceScreen') {
-                        iconName = focused ? 'calendar' : 'calendar-outline';
-                    }else if (route.name === 'SettingsScreen') {
-                        iconName = focused ? 'settings' : 'settings-outline';
-                    } 
+                    const iconName = focused
+                        ? screenConfig.icon
+                        : `${screenConfig.icon}-outline`;
 
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
-                tabBarActiveTintColor: 'black',
-                tabBarInactiveTintColor: 'gray',
-                headerShown: true,
-                tabBarStyle: { paddingBottom: 5, height: 60 }
             })}
         >
-            <BottomTab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
-            <BottomTab.Screen name="Demo" component={Demo} options={{ title: 'Demo' }} />
-            <BottomTab.Screen name="AttendanceScreen" component={AttendanceScreen} options={{ title: 'Attendance' }} />
-            <BottomTab.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: 'Settings' }} />
+            {Object.entries(SCREENS).map(([name, config]) => (
+                <BottomTab.Screen
+                    key={name}
+                    name={name}
+                    component={config.component}
+                    options={{
+                        title: config.label,
+                    }}
+                />
+            ))}
         </BottomTab.Navigator>
-    )
-}
+    );
+};
 
-export default BottomNavigationTab
+export default BottomNavigationTab;
 
