@@ -2,12 +2,28 @@ import { View, Text, TouchableOpacity, PermissionsAndroid, Platform } from 'reac
 import React, { useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoder-reborn';
+import { useLocation } from '../../context/LocationContext';
+// import DeviceInfo from 'react-native-device-info';
 
-function LocationButton({ onLocationChange }) {
-  const [location, setLocation] = useState(null);
+function LocationButton() {
+  const {
+    location, setLocation,
+    address, setAddress,
+    error, setError
+  } = useLocation();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [address, setAddress] = useState(null);
+
+  const postCurrentLocation = async () => {
+
+    try {
+
+    } catch (error) {
+      console.error(error, 'postCurrentLocation');
+
+    }
+
+  }
+
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -60,9 +76,7 @@ function LocationButton({ onLocationChange }) {
           const { latitude, longitude, accuracy, speed } = position.coords;
           const locationData = { latitude, longitude, accuracy, speed };
           setLocation(locationData);
-          if (onLocationChange) {
-            onLocationChange(locationData);
-          }
+
           getAddressFromCoords(latitude, longitude);
           setLoading(false);
         },
@@ -75,9 +89,7 @@ function LocationButton({ onLocationChange }) {
               const { latitude, longitude, accuracy, speed } = position.coords;
               const locationData = { latitude, longitude, accuracy, speed };
               setLocation(locationData);
-              if (onLocationChange) {
-                onLocationChange(locationData);
-              }
+
               getAddressFromCoords(latitude, longitude);
               setLoading(false);
             },
@@ -101,9 +113,9 @@ function LocationButton({ onLocationChange }) {
           maximumAge: 60000, // Accept cached location up to 1 minute
         }
       );
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      setError('Unexpected error: ' + error.message);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError('Unexpected error: ' + err.message);
       setLoading(false);
     }
   };

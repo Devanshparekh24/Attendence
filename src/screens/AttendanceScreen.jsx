@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, PermissionsAndroid, ScrollView } from 'react-native';
 import LocationButton from '../components/Buttons/LocationButton';
 import GoogleMap from '../components/Map/GoogleMap';
+import CheckInButton from '../components/Buttons/CheckInButton';
+import CheckOutButton from '../components/Buttons/CheckOutButton';
 
 const AttendanceScreen = () => {
-  const [currentLocation, setCurrentLocation] = useState(null);
+
 
 
   const requestLocationPermission = async () => {
@@ -30,10 +32,7 @@ const AttendanceScreen = () => {
     }
   };
 
-  const handleLocationChange = (location) => {
-    console.log('Location received in AttendanceScreen:', location);
-    setCurrentLocation(location);
-  };
+
 
   useEffect(() => {
     requestLocationPermission();
@@ -43,10 +42,14 @@ const AttendanceScreen = () => {
     <ScrollView contentContainerClassName="flex-grow">
       <View className="flex-1 ">
         <View className="justify-end items-center py-5 px-4">
-          <LocationButton onLocationChange={handleLocationChange} />
+          <LocationButton />
+          <View className='flex-row  gap-7 pt-7'>
+            <CheckInButton />
+            <CheckOutButton />
+          </View>
 
-          <GoogleMap location={currentLocation} />
 
+          <GoogleMap />
 
         </View>
       </View>

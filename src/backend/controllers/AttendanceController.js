@@ -103,10 +103,10 @@ class AttendanceController {
         try {
             const attendanceData = req.body;
 
-            if (!attendanceData.user_id || !attendanceData.check_in_time || !attendanceData.date) {
+            if (!attendanceData.employee_id || !attendanceData.latitude || !attendanceData.longitude || !attendanceData.android_id) {
                 return {
                     success: false,
-                    error: "User ID, check-in time, and date are required",
+                    error: "employee_id, latitude, longitude, and android_id are required",
                     message: "Validation failed"
                 };
             }

@@ -15,7 +15,7 @@ class AttendanceModel {
             query += ` AND date BETWEEN '${filters.date_from}' AND '${filters.date_to}'`;
         }
 
-        query += " ORDER BY date DESC, check_in_time DESC";
+        query += " ORDER BY date DESC, check_in_time DESC"; 
         return await dbConnection.executeQuery(query);
     }
 
@@ -39,12 +39,31 @@ class AttendanceModel {
 
     // Create new attendance record
     static async create(attendanceData) {
-        const { user_id, check_in_time, check_out_time, date, location } = attendanceData;
+        const { employee_id, latitude, longitude, accuracy, android_id, check_in, check_out } = attendanceData;
+
+        // Helper to format date for SQL or return NULL
+        const formatDate = (date) => {
+            if (!date) return 'NULL';
+            const d = new Date(date);
+            // Adjust for local timezone offset
+            const offsetMs = d.getTimezoneOffset() * 60 * 1000;
+            const localDate = new Date(d.getTime() - offsetMs);
+            return `'${localDate.toISOString().slice(0, 19).replace('T', ' ')}'`;
+        };
+
+        const checkInVal = formatDate(check_in);
+        const checkOutVal = formatDate(check_out);
+
+        // Ensure strings are quoted
+        const androidIdVal = `'${android_id}'`;
+        const longitudeVal = `'${longitude}'`;
+
         const query = `
-            INSERT INTO Attendance (user_id, check_in_time, check_out_time, date, location, created_at)
-            VALUES (${user_id}, '${check_in_time}', ${check_out_time ? `'${check_out_time}'` : 'NULL'}, '${date}', ${location ? `'${location}'` : 'NULL'}, GETDATE())
-        `;
-        await dbConnection.executeQuery(query);
+            INSERT INTO Att_EmpAttendance (employee_id, latitude, longitude, accuracy, android_id, check_in, check_out)
+            VALUES (${employee_id}, ${latitude}, ${longitudeVal}, ${accuracy}, ${androidIdVal}, ${checkInVal}, ${checkOutVal})`;
+
+        console.log("Executing Query:", query); // Debug log
+        await dbConnection.executeUpdate(query);
         return { success: true, message: "Attendance record created successfully" };
     }
 
@@ -57,7 +76,7 @@ class AttendanceModel {
         if (updates.length === 0) return { success: false, message: "No fields to update" };
 
         const query = `UPDATE Attendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE id = ${id}`;
-        await dbConnection.executeQuery(query);
+        await dbConnection.executeUpdate(query);
         return { success: true, message: "Attendance record updated successfully" };
     }
 

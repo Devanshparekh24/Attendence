@@ -1,8 +1,10 @@
 import { View } from 'react-native';
 import React from 'react';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useLocation } from '../../context/LocationContext';
 
-const GoogleMap = ({ location }) => {
+const GoogleMap = () => {
+    const { location } = useLocation();
     // Default location (India - center) if no location is provided
     const defaultRegion = {
         latitude: 20.5937,

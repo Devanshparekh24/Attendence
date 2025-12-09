@@ -41,6 +41,34 @@ class DatabaseConnection {
     }
   }
 
+  // Execute an update/insert query
+  async executeUpdate(sqlQuery) {
+    try {
+      console.log("🔌 Connecting to database for update...");
+      const connection = await MSSQL.connect(this.config);
+
+      if (!connection) {
+        throw new Error("Failed to establish database connection");
+      }
+
+      console.log("⚡ Executing update...");
+      const result = await MSSQL.executeUpdate(sqlQuery);
+
+      console.log("✅ Update executed successfully");
+      return result;
+    } catch (error) {
+      console.error("❌ Database Update Error:", error);
+      throw error;
+    } finally {
+      try {
+        await MSSQL.close();
+        console.log("🔌 Connection closed");
+      } catch (closeError) {
+        console.warn("⚠️  Warning: Could not close connection", closeError);
+      }
+    }
+  }
+
   // Test connection
   async testConnection() {
     try {
