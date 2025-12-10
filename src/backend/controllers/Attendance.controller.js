@@ -1,4 +1,4 @@
-import AttendanceModel from '../models/Attendance.js';
+import AttendanceModel from '../models/Attendance.model.js';
 
 class AttendanceController {
     // GET /attendance
@@ -139,7 +139,7 @@ class AttendanceController {
                     error: "ID parameter is required"
                 };
             }
-            
+
             const result = await AttendanceModel.update(id, updateData);
             return {
                 success: result.success,
@@ -160,10 +160,10 @@ class AttendanceController {
         try {
             const { employee_id, ...checkoutData } = req.body;
 
-            if (!employee_id) {
+            if (!employee_id || !checkoutData.check_out) {
                 return {
                     success: false,
-                    error: "employee_id is required",
+                    error: "employee_id and check out time is required",
                     message: "Validation failed"
                 };
             }

@@ -1,5 +1,5 @@
-import dbConnection from '../dbConnection';
-
+import dbConnection from '../dbConnection.js';
+import { formatDate } from '../utils/formateDate.js';
 class AttendanceModel {
     // Get all attendance records
     static async findAll(filters = {}) {
@@ -41,15 +41,6 @@ class AttendanceModel {
     static async create(attendanceData) {
         const { employee_id, android_id, latitude_in, latitude_out, longitude_in, longitude_out, accuracy_in, accuracy_out, check_in, check_out } = attendanceData;
 
-        // Helper to format date for SQL or return NULL
-        const formatDate = (date) => {
-            if (!date) return 'NULL';
-            const d = new Date(date);
-            // Adjust for local timezone offset
-            const offsetMs = d.getTimezoneOffset() * 60 * 1000;
-            const localDate = new Date(d.getTime() - offsetMs);
-            return `'${localDate.toISOString().slice(0, 19).replace('T', ' ')}'`;
-        };
 
         const checkInVal = formatDate(check_in);
         const checkOutVal = formatDate(check_out);
@@ -96,15 +87,6 @@ class AttendanceModel {
     // Check-out logic: Updates the latest open record for the employee
     static async checkout(employeeId, checkoutData) {
         const { latitude_out, longitude_out, accuracy_out, check_out } = checkoutData;
-
-        // Helper to format date for SQL
-        const formatDate = (date) => {
-            if (!date) return 'GETDATE()'; // Default to current server time if missing
-            const d = new Date(date);
-            const offsetMs = d.getTimezoneOffset() * 60 * 1000;
-            const localDate = new Date(d.getTime() - offsetMs);
-            return `'${localDate.toISOString().slice(0, 19).replace('T', ' ')}'`;
-        };
 
         const checkOutVal = formatDate(check_out);
         const latOut = latitude_out !== undefined ? latitude_out : 'NULL';

@@ -1,6 +1,6 @@
 import canteenMasterRoutes from './canteenMaster.js';
 import userRoutes from './user.js';
-import attendanceRoutes from './attendance.js';
+import attendanceRoutes from './attendance.route.js';
 
 // Combine all routes
 const routes = {

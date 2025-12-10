@@ -1,4 +1,4 @@
-import AttendanceController from '../controllers/AttendanceController.js';
+import AttendanceController from '../controllers/Attendance.controller.js';
 
 // Attendance Routes
 const attendanceRoutes = {
