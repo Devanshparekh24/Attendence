@@ -8,6 +8,8 @@ export const LocationProvider = ({ children }) => {
     // You can also add other shared state related to location here, e.g., address, error
     const [address, setAddress] = useState(null);
     const [error, setError] = useState(null);
+        const [loading, setLoading] = useState(false);
+
 
     return (
         <LocationContext.Provider
@@ -18,6 +20,8 @@ export const LocationProvider = ({ children }) => {
                 setAddress,
                 error,
                 setError,
+                loading,
+                setLoading,
             }}
         >
             {children}

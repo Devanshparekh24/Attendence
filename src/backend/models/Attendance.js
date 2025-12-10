@@ -60,7 +60,7 @@ class AttendanceModel {
         // Handle numeric fields that default to NULL or 0 based on schema
         const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : 'NULL';
         // Schema says latitude_out is NOT NULL, so default to 0 if null
-        const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : 0;
+        const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : 'NULL';
         const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : 'NULL';
         const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : 'NULL';
         const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : 'NULL';
@@ -87,7 +87,7 @@ class AttendanceModel {
 
         if (updates.length === 0) return { success: false, message: "No fields to update" };
 
-        const query = `UPDATE Attendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE id = ${id}`;
+        const query = `UPDATE Att_EmpAttendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE id = ${id}`;
         await dbConnection.executeUpdate(query);
         return { success: true, message: "Attendance record updated successfully" };
     }

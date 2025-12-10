@@ -58,6 +58,8 @@ const BiomatricScreen = ({ navigation }) => {
                 </View>
             ) : (
                 <View style={styles.authContainer}>
+                    
+
                     <Text style={styles.text}>Authenticate to continue</Text>
                     <Button title="Retry Biometric" onPress={handleBiometricAuth} />
                 </View>

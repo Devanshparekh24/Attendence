@@ -1,7 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View, PermissionsAndroid, Platform, Alert } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
 import React, { useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
+import { requestLocationPermission } from '../../utils/requestLocationPermission';
+
 
 import { ApiService } from '../../backend'
 import { useLocation } from '../../context/LocationContext';
@@ -9,39 +11,11 @@ const CheckInButton = () => {
     const {
         location, setLocation,
         address, setAddress,
-        error, setError
+        error, setError,
+        loading, setLoading,
     } = useLocation();
-    const [loading, setLoading] = useState(false);
 
-    const requestLocationPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: 'Location Permission',
-                        message: 'Attendence App needs access to your location',
-                        buttonNeutral: 'Ask Me Later',
-                        buttonNegative: 'Cancel',
-                        buttonPositive: 'OK',
-                    }
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    console.log('Location permission granted');
-                    return true;
-                } else {
-                    console.log('Location permission denied');
-                    setError('Permission denied');
-                    return false;
-                }
-            } catch (err) {
-                console.error('Permission error:', err);
-                setError('Permission error');
-                return false;
-            }
-        }
-        return true;
-    };
+
 
 
     // Get Current Location wrapped in Promise
