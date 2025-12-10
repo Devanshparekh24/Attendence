@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, BackHandler, Button, StyleSheet } from 'react-native';
+import { Text, View, BackHandler, Button, StyleSheet, Image } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Applogo from '../assets/images/Attendece_App_logo.png'
 
 const BiomatricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
@@ -58,8 +59,7 @@ const BiomatricScreen = ({ navigation }) => {
                 </View>
             ) : (
                 <View style={styles.authContainer}>
-                    
-
+                    <Image source={Applogo} style={styles.logo} />
                     <Text style={styles.text}>Authenticate to continue</Text>
                     <Button title="Retry Biometric" onPress={handleBiometricAuth} />
                 </View>
@@ -88,6 +88,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: '#333',
     },
+    logo: {
+        width: 50,
+        height: 50
+    }
 });
 
 export default BiomatricScreen;
