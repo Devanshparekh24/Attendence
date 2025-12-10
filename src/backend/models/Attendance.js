@@ -132,8 +132,14 @@ class AttendanceModel {
         `;
 
         console.log("Executing Checkout Query:", query);
-        await dbConnection.executeUpdate(query);
-        return { success: true, message: "Checkout successful" };
+        const result = await dbConnection.executeUpdate(query);
+        console.log("Checkout Update Result:", result);
+
+        if (result > 0) {
+            return { success: true, message: "Checkout successful" };
+        } else {
+            return { success: false, message: "Checkout failed: No open attendance record found for today." };
+        }
     }
 
     // Get attendance summary for user

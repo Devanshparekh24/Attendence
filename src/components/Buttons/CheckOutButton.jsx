@@ -41,7 +41,7 @@ const CheckOutButton = () => {
                 Alert.alert("Success", "Checked Out Successfully!");
                 console.log("Check Out response", response);
             } else {
-                throw new Error(response.error || "Check-out failed");
+                throw new Error(response.error || "Frist Do Check In then 'Click Out' ");
             }
 
         } catch (error) {
