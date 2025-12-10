@@ -72,7 +72,7 @@ const CheckInButton = () => {
             setLocation(locationData);
 
             const payload = {
-                employee_id: 1, // TODO: Get actual employee ID from context/auth
+                employee_id: 3, // TODO: Get actual employee ID from context/auth
                 latitude_in: locationData.latitude,
                 latitude_out: null,
                 longitude_in: locationData.longitude,
@@ -109,10 +109,9 @@ const CheckInButton = () => {
         <View>
             <TouchableOpacity
                 onPress={handleCheckIn}
-                disabled={loading}
-                className={`bg-primary-500 py-3 px-8 rounded-lg w-full items-center mb-2.5 ${loading ? 'opacity-70' : ''}`}>
+                className={`bg-primary-500 py-3 px-8 rounded-lg w-full items-center mb-2.5`}>
                 <Text className='text-primary-50 text-base font-semibold'>
-                    {loading ? 'Checking In...' : 'Check In'}
+                    Check In
                 </Text>
             </TouchableOpacity>
             {error && <Text className="text-red-500 text-center mt-1">{error}</Text>}

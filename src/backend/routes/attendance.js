@@ -27,6 +27,11 @@ const attendanceRoutes = {
         return await AttendanceController.create(req);
     },
 
+    // POST /attendance/checkout
+    'POST /attendance/checkout': async (req = {}) => {
+        return await AttendanceController.checkout(req);
+    },
+
     // PUT /attendance/:id
     'PUT /attendance/:id': async (req = {}) => {
         return await AttendanceController.update(req);

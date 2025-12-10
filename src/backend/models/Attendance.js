@@ -79,17 +79,61 @@ class AttendanceModel {
         };
     }
 
-    // Update attendance (checkout)
+    // Generic Update (Admin/Manual edit)
     static async update(id, updateData) {
         const updates = [];
         if (updateData.check_out_time) updates.push(`check_out_time = '${updateData.check_out_time}'`);
         if (updateData.location) updates.push(`location = '${updateData.location}'`);
+        // Add other fields as necessary
 
         if (updates.length === 0) return { success: false, message: "No fields to update" };
 
-        const query = `UPDATE Att_EmpAttendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE id = ${id}`;
+        const query = `UPDATE Att_EmpAttendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE attendance_id = ${id}`;
         await dbConnection.executeUpdate(query);
         return { success: true, message: "Attendance record updated successfully" };
+    }
+
+    // Check-out logic: Updates the latest open record for the employee
+    static async checkout(employeeId, checkoutData) {
+        const { latitude_out, longitude_out, accuracy_out, check_out } = checkoutData;
+
+        // Helper to format date for SQL
+        const formatDate = (date) => {
+            if (!date) return 'GETDATE()'; // Default to current server time if missing
+            const d = new Date(date);
+            const offsetMs = d.getTimezoneOffset() * 60 * 1000;
+            const localDate = new Date(d.getTime() - offsetMs);
+            return `'${localDate.toISOString().slice(0, 19).replace('T', ' ')}'`;
+        };
+
+        const checkOutVal = formatDate(check_out);
+        const latOut = latitude_out !== undefined ? latitude_out : 'NULL';
+        const lonOut = longitude_out !== undefined ? longitude_out : 'NULL';
+        const accOut = accuracy_out !== undefined ? accuracy_out : 'NULL';
+
+        const query = `
+            UPDATE Att_EmpAttendance
+            SET
+                latitude_out = ${latOut},
+                longitude_out = ${lonOut},
+                accuracy_out = ${accOut},
+                check_out = ${checkOutVal},
+                updated_at = GETDATE()
+            WHERE
+                attendance_id = (
+                    SELECT TOP 1 attendance_id
+                    FROM Att_EmpAttendance
+                    WHERE employee_id = ${employeeId}
+                    AND check_out IS NULL
+                    AND check_in >= CAST(GETDATE() AS DATE)
+                AND check_in < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
+                    ORDER BY attendance_id DESC
+                );
+        `;
+
+        console.log("Executing Checkout Query:", query);
+        await dbConnection.executeUpdate(query);
+        return { success: true, message: "Checkout successful" };
     }
 
     // Get attendance summary for user

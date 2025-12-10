@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, BackHandler, Button, StyleSheet, Image } from 'react-native';
+import { Text, View, BackHandler, Button, Image } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Applogo from '../assets/images/Attendece_App_logo.png'
+import { useWindowDimensions } from 'react-native';
+import Applogo from '../assets/images/Attendece_App_logo.png';
 
-const BiomatricScreen = ({ navigation }) => {
+const BiometricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
     const rnBiometrics = new ReactNativeBiometrics();
 
@@ -49,50 +50,33 @@ const BiomatricScreen = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Attendance App</Text>
+        <SafeAreaView className="flex-1 bg-white">
+            <View className="flex-1 justify-center items-center px-6">
+                <Text className="text-2xl font-bold mb-5">Attendance App</Text>
 
-            {!biometricAvailable ? (
-                <View>
-                    <Text style={styles.text}>Biometric not available on this device.</Text>
-                    <Button title="Login with MPIN" onPress={handleMPINAuth} />
-                </View>
-            ) : (
-                <View style={styles.authContainer}>
-                    <Image source={Applogo} style={styles.logo} />
-                    <Text style={styles.text}>Authenticate to continue</Text>
-                    <Button title="Retry Biometric" onPress={handleBiometricAuth} />
-                </View>
-            )}
+                {!biometricAvailable ? (
+                    <View className="items-center w-full">
+                        <Text className="text-base text-gray-800 mb-5 text-center">
+                            Biometric not available on this device.
+                        </Text>
+                        <Button title="Login with MPIN" onPress={handleMPINAuth} />
+                    </View>
+                ) : (
+                    <View className="items-center w-full">
+                        <Image
+                            source={Applogo}
+                            className="w-12 h-12 mb-5"
+                            resizeMode="contain"
+                        />
+                        <Text className="text-base text-gray-800 mb-5 text-center">
+                            Authenticate to continue
+                        </Text>
+                        <Button title="Retry Biometric" onPress={handleBiometricAuth} />
+                    </View>
+                )}
+            </View>
         </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    authContainer: {
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 16,
-        marginBottom: 20,
-        color: '#333',
-    },
-    logo: {
-        width: 50,
-        height: 50
-    }
-});
-
-export default BiomatricScreen;
-
+export default BiometricScreen;

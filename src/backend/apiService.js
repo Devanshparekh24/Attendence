@@ -28,6 +28,14 @@ class ApiService {
         return response;
     }
 
+    // POST /attendance/checkout
+    static async checkout(checkoutData) {
+        const response = await router.handle('POST', '/attendance/checkout', {
+            body: checkoutData
+        });
+        return response;
+    }
+
     // Raw query executor (for custom queries)
     static async raw(query) {
         // For raw queries, we still need direct database access

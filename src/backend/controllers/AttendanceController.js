@@ -139,7 +139,7 @@ class AttendanceController {
                     error: "ID parameter is required"
                 };
             }
-x
+            
             const result = await AttendanceModel.update(id, updateData);
             return {
                 success: result.success,
@@ -151,6 +151,34 @@ x
                 success: false,
                 error: error.message,
                 message: "Failed to update attendance record"
+            };
+        }
+    }
+
+    // POST /attendance/checkout
+    static async checkout(req) {
+        try {
+            const { employee_id, ...checkoutData } = req.body;
+
+            if (!employee_id) {
+                return {
+                    success: false,
+                    error: "employee_id is required",
+                    message: "Validation failed"
+                };
+            }
+
+            const result = await AttendanceModel.checkout(employee_id, checkoutData);
+            return {
+                success: result.success,
+                message: result.message
+            };
+        } catch (error) {
+            console.error("AttendanceController.checkout error:", error);
+            return {
+                success: false,
+                error: error.message,
+                message: "Failed to process checkout"
             };
         }
     }
