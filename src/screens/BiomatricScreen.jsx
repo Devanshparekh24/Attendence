@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, BackHandler, Button, StyleSheet } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BiomatricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
@@ -47,7 +48,7 @@ const BiomatricScreen = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Attendance App</Text>
 
             {!biometricAvailable ? (
@@ -61,7 +62,7 @@ const BiomatricScreen = ({ navigation }) => {
                     <Button title="Retry Biometric" onPress={handleBiometricAuth} />
                 </View>
             )}
-        </View>
+        </SafeAreaView>
     );
 };
 

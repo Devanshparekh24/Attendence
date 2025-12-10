@@ -99,10 +99,13 @@ const CheckInButton = () => {
 
             const payload = {
                 employee_id: 1, // TODO: Get actual employee ID from context/auth
-                latitude: locationData.latitude,
-                longitude: locationData.longitude,
-                accuracy: locationData.accuracy,
-                android_id: await DeviceInfo.getUniqueId(),
+                latitude_in: locationData.latitude,
+                latitude_out: null,
+                longitude_in: locationData.longitude,
+                longitude_out: null,
+                accuracy_in: locationData.accuracy,
+                accuracy_out: null,
+                android_id: await DeviceInfo.getAndroidId(),
                 check_in: new Date(),
                 check_out: null,
             };

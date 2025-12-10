@@ -15,7 +15,7 @@ class AttendanceModel {
             query += ` AND date BETWEEN '${filters.date_from}' AND '${filters.date_to}'`;
         }
 
-        query += " ORDER BY date DESC, check_in_time DESC"; 
+        query += " ORDER BY date DESC, check_in_time DESC";
         return await dbConnection.executeQuery(query);
     }
 
@@ -39,7 +39,7 @@ class AttendanceModel {
 
     // Create new attendance record
     static async create(attendanceData) {
-        const { employee_id, latitude, longitude, accuracy, android_id, check_in, check_out } = attendanceData;
+        const { employee_id, android_id, latitude_in, latitude_out, longitude_in, longitude_out, accuracy_in, accuracy_out, check_in, check_out } = attendanceData;
 
         // Helper to format date for SQL or return NULL
         const formatDate = (date) => {
@@ -56,15 +56,27 @@ class AttendanceModel {
 
         // Ensure strings are quoted
         const androidIdVal = `'${android_id}'`;
-        const longitudeVal = `'${longitude}'`;
+
+        // Handle numeric fields that default to NULL or 0 based on schema
+        const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : 'NULL';
+        // Schema says latitude_out is NOT NULL, so default to 0 if null
+        const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : 0;
+        const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : 'NULL';
+        const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : 'NULL';
+        const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : 'NULL';
+        const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : 'NULL';
+
 
         const query = `
-            INSERT INTO Att_EmpAttendance (employee_id, latitude, longitude, accuracy, android_id, check_in, check_out)
-            VALUES (${employee_id}, ${latitude}, ${longitudeVal}, ${accuracy}, ${androidIdVal}, ${checkInVal}, ${checkOutVal})`;
+            INSERT INTO Att_EmpAttendance (employee_id, android_id, latitude_in, latitude_out, longitude_in, longitude_out, accuracy_in, accuracy_out, check_in, check_out)
+            VALUES (${employee_id}, ${androidIdVal}, ${latIn}, ${latOut}, ${lonIn}, ${lonOut}, ${accIn}, ${accOut}, ${checkInVal}, ${checkOutVal})`;
 
         console.log("Executing Query:", query); // Debug log
         await dbConnection.executeUpdate(query);
-        return { success: true, message: "Attendance record created successfully" };
+        return {
+            success: true,
+            message: "Attendance record created successfully"
+        };
     }
 
     // Update attendance (checkout)
