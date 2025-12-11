@@ -32,8 +32,9 @@ const BiometricScreen = ({ navigation }) => {
 
                 if (success) {
                     console.log('successful biometrics provided');
+                    navigation.replace('Login');
                     // Navigate to the Main App (Bottom Tabs)
-                    navigation.replace('MainApp');
+                    // navigation.replace('MainApp');
                 } else {
                     console.log('user cancelled biometric prompt');
                     BackHandler.exitApp();

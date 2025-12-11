@@ -72,7 +72,7 @@ const CheckInButton = () => {
             setLocation(locationData);
 
             const payload = {
-                employee_id: 3, // TODO: Get actual employee ID from context/auth
+                employee_id: 1, // TODO: Get actual employee ID from context/auth
                 latitude_in: locationData.latitude,
                 latitude_out: null,
                 longitude_in: locationData.longitude,

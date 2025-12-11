@@ -3,7 +3,7 @@ import dbConnection from '../dbConnection';
 class CanteenMasterModel {
     // Get all canteen master records
     static async findAll() {
-        const query = "SELECT * FROM Att_EmpAttendance";
+        const query = "SELECT * FROM Att_EmpAttendance order by attendance_id desc";
         return await dbConnection.executeQuery(query);
     }
 

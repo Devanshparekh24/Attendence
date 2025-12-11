@@ -87,7 +87,7 @@ const Demo = () => {
   return (
     <View className="flex-1 p-4 pt-10 bg-gray-50">
       <Text className="text-2xl font-bold mb-5 text-center text-gray-800">
-        📊 User Master Table
+        📊 Attendance Table
       </Text>
 
       <TouchableOpacity
@@ -97,7 +97,7 @@ const Demo = () => {
         activeOpacity={0.7}
       >
         <Text className="text-white text-base font-semibold">
-          {isLoading ? 'Connecting...' : 'Fetch User Data'}
+          {isLoading ? 'Connecting...' : 'Fetch Attedance  Data'}
         </Text>
       </TouchableOpacity>
 
@@ -138,7 +138,7 @@ const Demo = () => {
             No data fetched yet
           </Text>
           <Text className="text-sm text-gray-400 text-center px-10">
-            Press the button above to fetch User_Master data
+            Press the button above to fetch Attendance data
           </Text>
         </View>
       )}

@@ -26,7 +26,7 @@ const CheckOutButton = () => {
             setLocation(locationData);
 
             const payload = {
-                employee_id: 3, // TODO: Get actual employee ID from context/auth
+                employee_id: 1, // TODO: Get actual employee ID from context/auth
                 latitude_out: locationData.latitude,
                 longitude_out: locationData.longitude,
                 accuracy_out: locationData.accuracy,
