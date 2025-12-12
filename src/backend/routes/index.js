@@ -1,12 +1,14 @@
 import canteenMasterRoutes from './canteenMaster.js';
 import userRoutes from './user.js';
 import attendanceRoutes from './attendance.route.js';
+import authenticationRoutes from './authentication.route.js'
 
 // Combine all routes
 const routes = {
     ...canteenMasterRoutes,
     ...userRoutes,
-    ...attendanceRoutes
+    ...attendanceRoutes,
+    ...authenticationRoutes
 };
 
 // Simple router class (simulating Express.js router)

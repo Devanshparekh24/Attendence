@@ -12,6 +12,8 @@ export {
     CanteenMasterModel,
     UserModel,
     AttendanceModel,
+    AuthenticationController,
+    AuthenticationModel,
 
     // Database
     dbConnection,

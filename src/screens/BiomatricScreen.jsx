@@ -45,9 +45,14 @@ const BiometricScreen = ({ navigation }) => {
             });
     };
 
-    const handleMPINAuth = () => {
-        // Placeholder for MPIN logic
-        console.log('Navigate to MPIN');
+    const handleExist = () => {
+
+        try {
+            BackHandler.exitApp();
+        } catch (error) {
+            console.log(error);
+        }
+
     };
 
     return (
@@ -60,14 +65,14 @@ const BiometricScreen = ({ navigation }) => {
                         <Text className="text-base text-gray-800 mb-5 text-center">
                             Biometric not available on this device.
                         </Text>
-                        <Button title="Login with MPIN" onPress={handleMPINAuth} />
+                        <Button title="Exist" onPress={handleExist} />
                     </View>
                 ) : (
                     <View className="items-center w-full">
                         <Image
                             source={Applogo}
-                            className="w-12 h-12 mb-5"
-                            resizeMode="contain"
+                             className="w-24 h-24 mb-4"
+                                resizeMode="contain"
                         />
                         <Text className="text-base text-gray-800 mb-5 text-center">
                             Authenticate to continue
