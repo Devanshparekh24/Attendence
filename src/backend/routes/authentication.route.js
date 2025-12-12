@@ -22,12 +22,11 @@ const authenticationRoutes = {
         return await AuthenticationController.getUserSummary(req);
     },
 
-    // POST /authentication
-    'POST /authentication': async (req = {}) => {
-        return await AuthenticationController.create(req);
-    },
 
- 
+    // POST /register (alias for /authentication)
+    'POST /register': async (req = {}) => {
+        return await AuthenticationController.createRegister(req);
+    },
 
     // PUT /authentication/:id
     'PUT /authentication/:id': async (req = {}) => {

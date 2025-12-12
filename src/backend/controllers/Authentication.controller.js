@@ -6,24 +6,35 @@ import AuthenticationModel from "../models/Authentication.model.js";
 class AuthenticationController {
 
     // POST /authentication
-    static async create(req) {
+    static async createRegister(req) {
         try {
             const authenticationData = req.body;
 
-            if (!authenticationData.employee_id || !authenticationData.android_id || !authenticationData.latitude_in || !authenticationData.longitude_in || !authenticationData.accuracy_in || !authenticationData.check_in) {
+            if (!authenticationData.emp_code) {
                 return {
                     success: false,
-                    error: "employee_id, android_id, latitude_in, longitude_in, accuracy_in, check_in are required",
+                    error: "Emp_Code is required",
                     message: "Validation failed"
                 };
             }
 
-            const result = await AuthenticationModel.create(authenticationData);
-            return {
-                success: true,
-                message: result.message,
-                data: authenticationData
-            };
+      const result = await AuthenticationModel.createRegister(authenticationData);
+
+if (!result.success) {
+    // 🔴 Return failure to frontend
+    return {
+        success: false,
+        message: result.message || "Registration failed",
+        error: result.error || null
+    };
+}
+
+// 🟢 Success
+return {
+    success: true,
+    message: result.message,
+    data: authenticationData
+};
         } catch (error) {
             console.error("AuthenticationController.create error:", error);
             return {

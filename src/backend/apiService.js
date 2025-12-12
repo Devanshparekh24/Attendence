@@ -28,6 +28,15 @@ class ApiService {
         return response;
     }
 
+    static async createRegister(registerData) {
+        const response = await router.handle('POST', '/register', {
+            body: registerData
+        });
+        return response;
+    }
+
+    
+
     // POST /attendance/checkout
     static async checkout(checkoutData) {
         const response = await router.handle('POST', '/attendance/checkout', {

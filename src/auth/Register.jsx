@@ -32,6 +32,9 @@ const Register = () => {
     } = useAuth();
 
 
+
+
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <KeyboardAvoidingView
@@ -121,22 +124,11 @@ const Register = () => {
                                     autoCorrect={false}
                                     editable={!loading}
                                 />
-                                {/* <TouchableOpacity
-                                    onPress={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-3"
-                                    disabled={loading}
-                                >
-                                    {showPassword ? (
-                                        <Ionicons name="eye" size={20} color="#6B7280" />
-                                    ) : (
-                                        <Ionicons name="eye-off" size={20} color="#6B7280" />
-                                    )}
-                                </TouchableOpacity> */}
+
 
                             </View>
                             <View>
 
-                                {/* <RegisterButton navigation={navigation} /> */}
 
                                 <RegisterButton />
 

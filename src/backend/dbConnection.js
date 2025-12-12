@@ -40,7 +40,43 @@ class DatabaseConnection {
       }
     }
   }
+  // Execute a stored procedure with parameters
+  async executeProcedure(procedureName, params = {}) {
+    try {
+      console.log(`🔌 Preparing to execute procedure: ${procedureName}`);
+      
+      // Construct parameter string for SQL command
+      const paramList = Object.entries(params).map(([key, value]) => {
+        let formattedValue = 'NULL';
+        
+        if (value === null || value === undefined) {
+          formattedValue = 'NULL';
+        } else if (typeof value === 'string') {
+          // Escape single quotes properly for SQL
+          formattedValue = `'${value.replace(/'/g, "''")}'`; 
+        } else if (value instanceof Date) {
+            // Basic date formatting - adjust format as needed for your DB
+            formattedValue = `'${value.toISOString()}'`; 
+        } else {
+          // Numbers and others
+          formattedValue = value;
+        }
 
+        return `@${key} = ${formattedValue}`;
+      });
+
+      const execQuery = `EXEC ${procedureName} ${paramList.join(', ')}`;
+      
+      console.log("⚡ Generated Procedure Query:", execQuery);
+
+      // Reuse the existing executeUpdate method which handles connection/execution
+      return await this.executeUpdate(execQuery);
+
+    } catch (error) {
+      console.error("❌ Procedure Execution Error:", error);
+      throw error;
+    }
+  }
   // Execute an update/insert query
   async executeUpdate(sqlQuery) {
     try {
