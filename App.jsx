@@ -18,20 +18,22 @@ const Stack = createNativeStackNavigator();
 
 const App = () => {
     return (
-        <SafeAreaProvider>
-            <AuthProvider>
-                <LocationProvider>
-                    <NavigationContainer>
-                        <Stack.Navigator screenOptions={{ headerShown: false }}>
-                            <Stack.Screen name="Biometric" component={BiomatricScreen} />
-                            <Stack.Screen name="Login" component={Login} />
-                            <Stack.Screen name="Register" component={Register} />
-                            <Stack.Screen name="MainApp" component={BottomNavigationTab} />
-                        </Stack.Navigator>
-                    </NavigationContainer>
-                </LocationProvider>
-            </AuthProvider>
-        </SafeAreaProvider>
+        <PaperProvider>
+            <SafeAreaProvider>
+                <AuthProvider>
+                    <LocationProvider>
+                        <NavigationContainer>
+                            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                                <Stack.Screen name="Biometric" component={BiomatricScreen} />
+                                <Stack.Screen name="Login" component={Login} />
+                                <Stack.Screen name="Register" component={Register} />
+                                <Stack.Screen name="MainApp" component={BottomNavigationTab} />
+                            </Stack.Navigator>
+                        </NavigationContainer>
+                    </LocationProvider>
+                </AuthProvider>
+            </SafeAreaProvider>
+        </PaperProvider>
     );
 };
 
