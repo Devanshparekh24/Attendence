@@ -34,10 +34,10 @@ const BiometricScreen = ({ navigation }) => {
                     console.log('successful biometrics provided');
                     navigation.replace('Login');
                     // Navigate to the Main App (Bottom Tabs)
-                    // navigation.replace('MainApp');
                 } else {
                     console.log('user cancelled biometric prompt');
                     BackHandler.exitApp();
+                    // navigation.replace('MainApp');
                 }
             })
             .catch(() => {
@@ -48,7 +48,9 @@ const BiometricScreen = ({ navigation }) => {
     const handleExist = () => {
 
         try {
-            BackHandler.exitApp();
+            // BackHandler.exitApp();
+                    navigation.replace('MainApp');
+
         } catch (error) {
             console.log(error);
         }

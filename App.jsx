@@ -17,24 +17,24 @@ import Register from './src/auth/Register';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-    return (
-        <PaperProvider>
-            <SafeAreaProvider>
-                <AuthProvider>
-                    <LocationProvider>
-                        <NavigationContainer>
-                            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                                <Stack.Screen name="Biometric" component={BiomatricScreen} />
-                                <Stack.Screen name="Login" component={Login} />
-                                <Stack.Screen name="Register" component={Register} />
-                                <Stack.Screen name="MainApp" component={BottomNavigationTab} />
-                            </Stack.Navigator>
-                        </NavigationContainer>
-                    </LocationProvider>
-                </AuthProvider>
-            </SafeAreaProvider>
-        </PaperProvider>
-    );
+  return (
+    <SafeAreaProvider>
+      <PaperProvider>
+        <AuthProvider>
+          <LocationProvider>
+            <NavigationContainer>
+              <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="Biometric" component={BiomatricScreen} />
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="MainApp" component={BottomNavigationTab} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </LocationProvider>
+        </AuthProvider>
+      </PaperProvider>
+    </SafeAreaProvider>
+  );
 };
 
 export default App;
