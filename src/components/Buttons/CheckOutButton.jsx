@@ -4,14 +4,20 @@ import Geolocation from '@react-native-community/geolocation'
 import { useLocation } from '../../context/LocationContext';
 import { requestLocationPermission } from '../../utils/requestLocationPermission';
 import { ApiService } from '../../backend';
+import { useAuth } from '../../context/AuthContext.js'
+
 
 const CheckOutButton = () => {
+
     const {
         setLocation,
         setError,
         setLoading,
     } = useLocation();
 
+    const {
+        employeeId
+    } = useAuth();
 
 
     const handleCheckOut = async () => {
@@ -26,7 +32,7 @@ const CheckOutButton = () => {
             setLocation(locationData);
 
             const payload = {
-                employee_id: 1, // TODO: Get actual employee ID from context/auth
+                emp_code: employeeId,
                 latitude_out: locationData.latitude,
                 longitude_out: locationData.longitude,
                 accuracy_out: locationData.accuracy,

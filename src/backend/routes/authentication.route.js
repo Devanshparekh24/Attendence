@@ -28,6 +28,11 @@ const authenticationRoutes = {
         return await AuthenticationController.createRegister(req);
     },
 
+    // POST /login
+    'POST /login': async (req = {}) => {
+        return await AuthenticationController.checkLogin(req);
+    },
+
     // PUT /authentication/:id
     'PUT /authentication/:id': async (req = {}) => {
         return await AuthenticationController.update(req);

@@ -8,14 +8,14 @@ class AuthenticationModel {
                 emp_code,
                 android_id,
                 device_name,
-                emp_pass ,
+                emp_pass,
                 from_date,
                 to_date
             } = authenticationData;
 
             const empId = emp_code || null;
             const androidIdVal = android_id || null;
-            const emp_passVal =emp_pass;
+            const emp_passVal = emp_pass;
             const deviceNameVal = device_name || null;
             const fromDateVal = from_date || null;
             const toDateVal = to_date || null;
@@ -27,7 +27,7 @@ class AuthenticationModel {
                     emp_code: empId,
                     android_id: androidIdVal,
                     device_name: deviceNameVal,
-                    emp_pass:emp_passVal,
+                    emp_pass: emp_passVal,
                     from_date: fromDateVal,
                     to_date: toDateVal
                 }
@@ -37,6 +37,42 @@ class AuthenticationModel {
                 success: true,
                 message: "Attendance record created successfully",
                 result
+            };
+        } catch (error) {
+            console.error("SQL Error:", error);
+
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            };
+        }
+    }
+
+    static async checkLogin(authenticationData) {
+        try {
+            const {
+                emp_code,
+                emp_pass,
+                android_id,
+                device_name
+            } = authenticationData;
+
+            const empId = emp_code;
+            const emp_passVal = emp_pass;
+            const androidIdVal = android_id || null;
+            const deviceNameVal = device_name || null;
+
+            const loginData = await dbConnection.executeProcedure("PRC_ATT_LOGIN_CHK", {
+                emp_code: empId,
+                android_id: androidIdVal,
+                device_name: deviceNameVal,
+                emp_pass: emp_passVal
+            });
+
+            return {
+                success: true,
+                message: "Employee login successfully",
+                loginData
             };
         } catch (error) {
             console.error("SQL Error:", error);

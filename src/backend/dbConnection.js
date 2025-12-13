@@ -44,33 +44,41 @@ class DatabaseConnection {
   async executeProcedure(procedureName, params = {}) {
     try {
       console.log(`🔌 Preparing to execute procedure: ${procedureName}`);
-      
-      // Construct parameter string for SQL command
+      console.log(`📦 Parameters:`, params);
+
+      // Build parameter list for EXEC statement
       const paramList = Object.entries(params).map(([key, value]) => {
-        let formattedValue = 'NULL';
-        
+        let formattedValue;
+
         if (value === null || value === undefined) {
           formattedValue = 'NULL';
         } else if (typeof value === 'string') {
-          // Escape single quotes properly for SQL
-          formattedValue = `'${value.replace(/'/g, "''")}'`; 
+          // Escape single quotes and wrap in quotes
+          formattedValue = `'${value.replace(/'/g, "''")}'`;
         } else if (value instanceof Date) {
-            // Basic date formatting - adjust format as needed for your DB
-            formattedValue = `'${value.toISOString()}'`; 
-        } else {
-          // Numbers and others
+          // Format date as ISO string and wrap in quotes
+          const dateStr = value.toISOString().slice(0, 19).replace('T', ' ');
+          formattedValue = `'${dateStr}'`;
+        } else if (typeof value === 'number') {
+          // Numbers don't need quotes
           formattedValue = value;
+        } else {
+          // Fallback: convert to string and quote
+          formattedValue = `'${String(value).replace(/'/g, "''")}'`;
         }
 
         return `@${key} = ${formattedValue}`;
       });
 
       const execQuery = `EXEC ${procedureName} ${paramList.join(', ')}`;
-      
+
       console.log("⚡ Generated Procedure Query:", execQuery);
 
-      // Reuse the existing executeUpdate method which handles connection/execution
-      return await this.executeUpdate(execQuery);
+      // Execute using executeUpdate
+      const result = await this.executeUpdate(execQuery);
+
+      console.log("✅ Procedure executed successfully");
+      return result;
 
     } catch (error) {
       console.error("❌ Procedure Execution Error:", error);

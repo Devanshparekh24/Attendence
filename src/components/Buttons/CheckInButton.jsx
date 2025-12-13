@@ -3,10 +3,11 @@ import React, { useState } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from 'react-native-device-info';
 import { requestLocationPermission } from '../../utils/requestLocationPermission';
-
+import { useAuth } from '../../context/AuthContext';
 
 import { ApiService } from '../../backend'
 import { useLocation } from '../../context/LocationContext';
+
 const CheckInButton = () => {
     const {
         location, setLocation,
@@ -15,6 +16,9 @@ const CheckInButton = () => {
         loading, setLoading,
     } = useLocation();
 
+    const {
+        employeeId
+    } = useAuth();
 
 
 
@@ -72,7 +76,7 @@ const CheckInButton = () => {
             setLocation(locationData);
 
             const payload = {
-                employee_id: 1, // TODO: Get actual employee ID from context/auth
+                emp_code: employeeId, // TODO: Get actual employee ID from context/auth
                 latitude_in: locationData.latitude,
                 latitude_out: null,
                 longitude_in: locationData.longitude,

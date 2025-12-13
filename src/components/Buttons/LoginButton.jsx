@@ -3,18 +3,19 @@ import { Alert, TouchableOpacity } from 'react-native';
 import { Text, View } from 'react-native'
 import { useAuth } from '../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-
+import { ApiService } from '../../backend'
+import DeviceInfo from 'react-native-device-info';
 
 const LoginButton = () => {
     const [loading, setLoading] = useState(false);
-    const navigation=useNavigation();
+    const navigation = useNavigation();
 
     const {
         employeeId, setEmployeeId,
         password, setPassword,
         showPassword, setShowPassword
     } = useAuth();
-    
+
     const handleLogin = async () => {
         // Validate inputs
         if (!employeeId.trim()) {
@@ -30,19 +31,31 @@ const LoginButton = () => {
         setLoading(true);
 
         try {
-            // TODO: Implement actual login API call
-            console.log('Login attempt:', { employeeId, password: '***' });
+            // Get android_id and device_name from device
+            const androidId = await DeviceInfo.getAndroidId();
+            const deviceName = await DeviceInfo.getDeviceNameSync();
 
-            // Simulated API call - Replace with actual authentication
-            // const response = await ApiService.login({ employeeId, password });
+            console.log('Login attempt:', { employeeId, password, androidId, deviceName });
 
-            // For now, simulate success after 1 second
-            setTimeout(() => {
+            const response = await ApiService.checkLogin({
+                employeeId,
+                password,
+                androidId,
+                deviceName
+            });
+
+            console.log("login response", response);
+
+            if (response.success) {
+
                 setLoading(false);
-                Alert.alert('Success', 'Login successful!');
-                // Navigate to main app after successful login
-                // navigation.replace('MainApp');
-            }, 1000);
+                navigation.replace('MainApp');
+
+            } else {
+                Alert.alert("Login Failed", response.message || "Invalid credentials");
+                setLoading(false);
+            }
+
 
         } catch (error) {
             setLoading(false);

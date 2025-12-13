@@ -79,6 +79,7 @@ const Login = () => {
                                 <TextInput
                                     className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800"
                                     placeholder="Enter your Employee ID"
+                                    keyboardType='numeric'
                                     placeholderTextColor="#9CA3AF"
                                     value={employeeId}
                                     onChangeText={setEmployeeId}

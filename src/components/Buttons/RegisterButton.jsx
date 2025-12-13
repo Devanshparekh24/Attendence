@@ -17,12 +17,7 @@ const RegisterButton = () => {
 
     const handleNavigateLogin = () => {
         try {
-
-
             navigation.navigate('Login');
-
-            console.log('Device Name', DeviceInfo.getDeviceNameSync());
-
         } catch (error) {
             console.log(error);
 
@@ -41,7 +36,7 @@ const RegisterButton = () => {
                 emp_code: employeeId,
                 android_id: androidId,
                 device_name: DeviceName,
-                emp_pass:password,
+                emp_pass: password,
                 from_date: new Date(),
                 to_date: null,
             };
@@ -61,7 +56,10 @@ const RegisterButton = () => {
 
             // 🟢 On success
             Alert.alert("Success", "Registered Successfully!", [
-                { text: "OK", onPress: () => navigation.navigate('Login') }
+                {
+                    text: "OK",
+                    onPress: () => handleNavigateLogin()
+                }
             ]);
 
         } catch (error) {

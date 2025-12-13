@@ -39,35 +39,66 @@ class AttendanceModel {
 
     // Create new attendance record
     static async create(attendanceData) {
-        const { employee_id, android_id, latitude_in, latitude_out, longitude_in, longitude_out, accuracy_in, accuracy_out, check_in, check_out } = attendanceData;
+        try {
+
+            const {
+                emp_code,
+                android_id,
+                latitude_in,
+                latitude_out,
+                longitude_in,
+                longitude_out,
+                accuracy_in,
+                accuracy_out,
+                check_in,
+                check_out
+            } = attendanceData;
 
 
-        const checkInVal = formatDate(check_in);
-        const checkOutVal = formatDate(check_out);
+            const checkInVal = formatDate(check_in);
+            const checkOutVal = formatDate(check_out);
 
-        // Ensure strings are quoted
-        const androidIdVal = `'${android_id}'`;
+            // Ensure strings are quoted
+            const androidIdVal = android_id;
+            const empId = emp_code;
+            // Handle numeric fields that default to NULL or 0 based on schema
+            const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : null; 
+            const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : null; 
+            const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : null; 
+            const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : null; 
+            const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : null; 
+            const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : null; 
 
-        // Handle numeric fields that default to NULL or 0 based on schema
-        const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : 'NULL';
-        // Schema says latitude_out is NOT NULL, so default to 0 if null
-        const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : 'NULL';
-        const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : 'NULL';
-        const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : 'NULL';
-        const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : 'NULL';
-        const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : 'NULL';
+            const result = await dbConnection.executeProcedure("PRC_ATT_CHECKIN_INS", {
+                emp_code: empId, 
+                android_id: androidIdVal,
+                latitude_in: latIn,
+                latitude_out: latOut,
+                longitude_in: lonIn,
+                longitude_out: lonOut,
+                accuracy_in: accIn,
+                accuracy_out: accOut,
+                check_in: checkInVal,
+                check_out: checkOutVal
+            });
+
+            console.log("Executing Query:", result); // Debug log
+
+            return {
+                success: true,
+                message: "Attendance record created successfully",
+                result
+            };
+        } catch (error) {
+            console.error("SQL Error:", error);
+
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            };
+        }
 
 
-        const query = `
-            INSERT INTO Att_EmpAttendance (employee_id, android_id, latitude_in, latitude_out, longitude_in, longitude_out, accuracy_in, accuracy_out, check_in, check_out)
-            VALUES (${employee_id}, ${androidIdVal}, ${latIn}, ${latOut}, ${lonIn}, ${lonOut}, ${accIn}, ${accOut}, ${checkInVal}, ${checkOutVal})`;
-
-        console.log("Executing Query:", query); // Debug log
-        await dbConnection.executeUpdate(query);
-        return {
-            success: true,
-            message: "Attendance record created successfully"
-        };
     }
 
     // Generic Update (Admin/Manual edit)
@@ -99,7 +130,7 @@ class AttendanceModel {
                 latitude_out = ${latOut},
                 longitude_out = ${lonOut},
                 accuracy_out = ${accOut},
-                check_out = ${checkOutVal},
+                check_out = ${checkOutVal ? `'${checkOutVal}'` : 'NULL'},
                 updated_at = GETDATE()
             WHERE
                 attendance_id = (

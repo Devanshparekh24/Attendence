@@ -35,8 +35,6 @@ class ApiService {
         return response;
     }
 
-    
-
     // POST /attendance/checkout
     static async checkout(checkoutData) {
         const response = await router.handle('POST', '/attendance/checkout', {
@@ -44,6 +42,35 @@ class ApiService {
         });
         return response;
     }
+
+    static async checkLogin(authenticationData) {
+        try {
+            const response = await router.handle('POST', '/login', {
+                body: {
+                    emp_code: authenticationData.employeeId,
+                    emp_pass: authenticationData.password,
+                    android_id: authenticationData.androidId,
+                    device_name: authenticationData.deviceName
+                }
+            });
+            return response;
+
+        } catch (error) {
+            console.log(error)
+            return {
+                success: false,
+                message: error.message || "Login request failed"
+            };
+        }
+    }
+
+
+
+
+
+
+
+
 
     // Raw query executor (for custom queries)
     static async raw(query) {
