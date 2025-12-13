@@ -48,8 +48,7 @@ const BiometricScreen = ({ navigation }) => {
     const handleExist = () => {
 
         try {
-            // BackHandler.exitApp();
-                    navigation.replace('MainApp');
+            BackHandler.exitApp();
 
         } catch (error) {
             console.log(error);
