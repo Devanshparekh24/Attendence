@@ -24,7 +24,7 @@ const Switch_IN_OUT = () => {
   const { employeeId } = useAuth();
 
 
-const RefreshAtt = useGetCheckInOut();
+  const RefreshAtt = useGetCheckInOut();
 
   // Get Current Location wrapped in Promise
   const getCurrentLocationPromise = () => {
@@ -153,10 +153,14 @@ const RefreshAtt = useGetCheckInOut();
       const response = await ApiService.checkout(payload);
 
       if (response.success) {
-        console.log("Check Out response", response);
+        console.log("✅ Check Out response", response);
 
       } else {
-        throw new Error(response.messae || response.error || "First Do Check In then 'Check Out'");
+        // Show the actual error message from backend
+        const errorMsg = response.message || response.error ;
+        console.error("❌ Checkout failed:", errorMsg);
+        console.error("❌ Full response:", response);
+        throw new Error(errorMsg);
       }
 
     } catch (error) {
@@ -167,27 +171,27 @@ const RefreshAtt = useGetCheckInOut();
       setLoading(false);
     }
   };
-const onValueChange = async (value) => {
-  try {
-    if (value) {
-      console.log("Check IN");
-      setIsCheckedIn(true);
+  const onValueChange = async (value) => {
+    try {
+      if (value) {
+        console.log("Check IN");
+        setIsCheckedIn(true);
 
-      await handleCheckIn();   // ⏳ wait for API success
-    } else {
-      console.log("Check Out");
-      setIsCheckedIn(false);
+        await handleCheckIn();   // ⏳ wait for API success
+      } else {
+        console.log("Check Out");
+        setIsCheckedIn(false);
 
-      await handleCheckOut();  // ⏳ wait for API success
+        await handleCheckOut();  // ⏳ wait for API success
+      }
+
+      console.log("🔄 Refreshing attendance");
+      await RefreshAtt();        // ✅ now fetches latest data
+
+    } catch (err) {
+      console.log('onValueChange error:', err);
     }
-
-    console.log("🔄 Refreshing attendance");
-    await RefreshAtt();        // ✅ now fetches latest data
-
-  } catch (error) {
-    console.log('onValueChange', error);
-  }
-};
+  };
 
 
   return (

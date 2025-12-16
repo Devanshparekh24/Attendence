@@ -118,52 +118,48 @@ class AttendanceModel {
     }
 
     // Check-out logic: Updates the latest open record for the employee
-    static async checkout(emp_code, checkoutData) {
-        const {
-            latitude_out,
-            longitude_out,
-            accuracy_out,
-            check_out
-        } = checkoutData;
+    static async checkout(checkoutData) {
+        try {
+            const {
+                emp_code,
+                latitude_out,
+                longitude_out,
+                accuracy_out,
+                check_out
+            } = checkoutData;
 
-        const empId = emp_code;
+            const empId = emp_code;
+            const checkOutVal = formatDate(check_out);
 
-        const checkOutVal = formatDate(check_out);
-        const latOut = latitude_out !== undefined ? latitude_out : 'NULL';
-        const lonOut = longitude_out !== undefined ? longitude_out : 'NULL';
-        const accOut = accuracy_out !== undefined ? accuracy_out : 'NULL';
+            const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : null;
+            const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : null;
+            const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : null;
 
-        const query = `
-            UPDATE Att_EmpAttendance
-            SET
-                latitude_out = ${latOut},
-                longitude_out = ${lonOut},
-                accuracy_out = ${accOut},
-                check_out = ${checkOutVal ? `'${checkOutVal}'` : 'NULL'},
-                updated_at = GETDATE()
-            WHERE
-                attendance_id = (
-                    SELECT TOP 1 attendance_id
-                    FROM Att_EmpAttendance
-                    WHERE emp_code = ${empId}
-                    AND check_out IS NULL
-                    AND check_in >= CAST(GETDATE() AS DATE)
-                AND check_in < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
-                    ORDER BY attendance_id DESC
-                );
-        `;
+            const result = await dbConnection.executeProcedure("PRC_ATT_CHECKOUT_UPD", {
+                emp_code: empId,
+                latitude_out: latOut,
+                longitude_out: lonOut,
+                accuracy_out: accOut,
+                check_out: checkOutVal
+            });
+            if (result !== undefined && result !== null) {
+                return {
+                    success: true,
+                    message: "Checkout successful",
+                    rowsAffected: result
+                };
+            }
+        } catch (error) {
+            console.error(" Checkout SQL Error:", error);
+            console.error(" Error details:", {
+                message: error.message,
+                originalError: error.originalError,
+                stack: error.stack
+            });
 
-        console.log("Executing Checkout Query:", query);
-        const result = await dbConnection.executeUpdate(query);
-        console.log("Checkout Update Result:", result);
-
-        if (result > 0) {
-            return { success: true, message: "Checkout successful" };
-        } else {
             return {
                 success: false,
-                message: "Please Check In first before checking out",
-                error: "No open attendance record found for today"
+                message: error.originalError?.message || error.message || "Checkout failed"
             };
         }
     }

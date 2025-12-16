@@ -168,17 +168,17 @@ class AttendanceController {
     // POST /attendance/checkout
     static async checkout(req) {
         try {
-            const { emp_code, ...checkoutData } = req.body;
+            const { ...checkoutData } = req.body;
 
-            if (!emp_code) {
+            if (!checkoutData.emp_code || !checkoutData.check_out) {
                 return {
                     success: false,
-                    error: "emp_code is required",
+                    error: "emp_code and Check Out time is required",
                     message: "Validation failed"
                 };
             }
 
-            const result = await AttendanceModel.checkout(emp_code, checkoutData);
+            const result = await AttendanceModel.checkout(checkoutData);
             return {
                 success: result.success,
                 message: result.message,
@@ -196,7 +196,7 @@ class AttendanceController {
 
     static async getCheckInTime(req) {
         try {
-                        console.log("Controller received result123:");
+            console.log("Controller received result123:");
 
             const { emp_code } = req.body || {};
 
