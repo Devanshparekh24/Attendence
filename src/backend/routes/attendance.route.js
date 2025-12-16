@@ -31,6 +31,10 @@ const attendanceRoutes = {
     'POST /attendance/checkout': async (req = {}) => {
         return await AttendanceController.checkout(req);
     },
+    // POST /attendance/checkinout
+    'POST /attendance/checkinout': async (req = {}) => {
+        return await AttendanceController.getCheckInTime(req);
+    },
 
     // PUT /attendance/:id
     'PUT /attendance/:id': async (req = {}) => {

@@ -1,30 +1,221 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Text, Switch } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Geolocation from '@react-native-community/geolocation';
+import { ApiService } from '../../backend'
+import { requestLocationPermission } from '../../utils/requestLocationPermission';
+import { useLocation } from '../../context/LocationContext';
+import { useAuth } from '../../context/AuthContext';
+import DeviceInfo from 'react-native-device-info';
 
 const Switch_IN_OUT = () => {
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const {
+    isCheckedIn,
+    setIsCheckedIn,
+    location,
+    setLocation,
+    refreshCheckInOut
+  } = useLocation();
+
+  const { employeeId } = useAuth();
+
+
+  // Get Current Location wrapped in Promise
+  const getCurrentLocationPromise = () => {
+    return new Promise(async (resolve, reject) => {
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission) {
+        reject(new Error('Location permission denied'));
+        return;
+      }
+
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude, accuracy, speed } = position.coords;
+          resolve({ latitude, longitude, accuracy, speed });
+        },
+        (err) => {
+          console.log("Fast location failed, retrying with high accuracy...", err);
+          Geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude, accuracy, speed } = position.coords;
+              resolve({ latitude, longitude, accuracy, speed });
+            },
+            (retryErr) => {
+              reject(new Error("Unable to get location. Ensure GPS is ON."));
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 15000,
+              maximumAge: 0,
+              forceRequestLocation: true,
+              showLocationDialog: true,
+            }
+          );
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 5000,
+          maximumAge: 10000,
+        }
+      );
+    });
+  };
+
+
+  const handleCheckIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('Starting Check-In process...');
+
+      // Validate employee ID
+      if (!employeeId || employeeId.trim() === '') {
+        throw new Error('Employee ID is required. Please log in again.');
+      }
+
+      const locationData = await getCurrentLocationPromise();
+      console.log('Location obtained:', locationData);
+
+      // Update context state for display if needed
+      setLocation(locationData);
+
+      const payload = {
+        emp_code: employeeId,
+        latitude_in: locationData.latitude,
+        latitude_out: null,
+        longitude_in: locationData.longitude,
+        longitude_out: null,
+        accuracy_in: locationData.accuracy,
+        accuracy_out: null,
+        android_id: await DeviceInfo.getAndroidId(),
+        check_in: new Date(),
+        check_out: null,
+        Is_Visit: 0,
+      };
+
+      console.log("Payload:", payload);
+      const response = await ApiService.createAttendance(payload);
+
+      if (response.success) {
+        // Alert.alert("Success", "Checked In Successfully!");
+        console.log("Check In response", response.data);
+        
+        // Refresh check-in/out times from database
+        if (refreshCheckInOut) {
+          await refreshCheckInOut();
+        }
+      } 
+      else {
+        throw new Error(response.message);
+
+      }
+
+    } 
+    catch (error) {
+      console.error("Check-In Error:", error);
+      setError(error.message);
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleCheckOut = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log('Starting Check-Out process...');
+
+      // Validate employee ID
+      if (!employeeId || employeeId.trim() === '') {
+        throw new Error('Employee ID is required. Please log in again.');
+      }
+
+      const locationData = await getCurrentLocationPromise();
+      console.log('Location obtained:', locationData);
+
+      // Update context state for display if needed
+      setLocation(locationData);
+
+      const payload = {
+        emp_code: employeeId,
+        latitude_out: locationData.latitude,
+        longitude_out: locationData.longitude,
+        accuracy_out: locationData.accuracy,
+        check_out: new Date(),
+        Is_Visit: 0,
+
+      };
+
+      console.log("Payload:", payload);
+      // Call the new stateless checkout endpoint
+      const response = await ApiService.checkout(payload);
+
+      if (response.success) {
+        Alert.alert("Success", "Checked Out Successfully!");
+        console.log("Check Out response", response);
+        
+        // Refresh check-in/out times from database
+        if (refreshCheckInOut) {
+          await refreshCheckInOut();
+        }
+      } else {
+        throw new Error(response.messae || response.error || "First Do Check In then 'Check Out'");
+      }
+
+    } catch (error) {
+      console.error("Check-Out Error:", error);
+      setError(error.message);
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onValueChange = (value) => {
+    try {
+      if (value) {
+        // CHECK IN
+        setIsCheckedIn(true);
+        handleCheckIn();
+
+      } else {
+        // CHECK OUT
+        setIsCheckedIn(false);
+        handleCheckOut();
+      }
+
+
+    } catch (error) {
+      console.log('onValueChange', error);
+
+    }
+  }
 
   return (
+
+
     <View className="mb-6 flex-row items-center justify-between py-3 px-4 bg-gray-100 rounded-xl">
       <View className="flex-row items-center">
         <Ionicons
           name="log-out"
           size={24}
-          color={!isCheckedIn ? '#831f1f' : '#6b7280'}
+          color={!isCheckedIn ? '#FF2C2C' : '#6b7280'}
         />
         <Text className={`ml-2 text-base font-medium ${!isCheckedIn ? 'text-green-600' : 'text-gray-500'}`}>
           Check Out
         </Text>
       </View>
-      
+
       <Switch
         value={isCheckedIn}
-        onValueChange={setIsCheckedIn}
+        onValueChange={onValueChange}
         color="#10b981"
       />
-      
+
       <View className="flex-row items-center">
         <Text className={`mr-2 text-base font-medium ${isCheckedIn ? 'text-green-600' : 'text-gray-500'}`}>
           Check In

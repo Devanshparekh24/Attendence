@@ -9,14 +9,17 @@ const StatusCard = () => {
     hour: '2-digit',
     minute: '2-digit',
   });
+
+
+
+
   return (
     <View>
       <View className="mt-2 mb-6 bg-white rounded-xl shadow-md p-6">
         <View className="items-center">
           <View
-            className={`mb-2 rounded-full p-4 ${
-              isCheckedIn ? 'bg-green-100' : 'bg-blue-100'
-            }`}
+            className={`mb-2 rounded-full p-4 ${isCheckedIn ? 'bg-green-100' : 'bg-blue-100'
+              }`}
           >
             <Ionicons
               name={isCheckedIn ? 'checkmark-circle' : 'log-in'}
@@ -33,7 +36,7 @@ const StatusCard = () => {
           </Text>
 
           <Text variant="bodyMedium" className="mt-2 text-gray-600">
-            {currentTime}
+            
           </Text>
         </View>
       </View>{' '}

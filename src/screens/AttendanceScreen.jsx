@@ -62,6 +62,8 @@ import StatusCard from '../components/Card/StatusCard';
 import CheckInOutCard from '../components/Card/CheckInOutCard';
 import Switch_IN_OUT from '../components/Switch_Button/Switch_IN_OUT';
 import HistroyCard from '../components/Card/HistroyCard';
+import GoogleMap from '../components/Map/GoogleMap';
+import AttedenceSegmetButton from '../components/SegmentButtons/AttedenceSegmetButton';
 
 const AttendanceScreen = () => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -74,8 +76,13 @@ const AttendanceScreen = () => {
       contentContainerStyle={{ flexGrow: 1 }}
       keyboardShouldPersistTaps="handled"
     >
+      <View className='mt-4'>
+
+        {/* <AttedenceSegmetButton /> */}
+      </View>
+
       {/* Status Card */}
-      <View>
+      <View className='mt-4'>
         <StatusCard />
       </View>
 
@@ -84,12 +91,19 @@ const AttendanceScreen = () => {
         <CheckInOutCard />
       </View>
 
+      {/* Google Map  */}
+      <View>
+
+        {/* <GoogleMap /> */}
+
+      </View>
+
       {/* Main Action Button */}
       <Switch_IN_OUT />
 
       {/* History Card */}
 
-      <View>
+      <View className=''>
         <HistroyCard />
       </View>
     </ScrollView>

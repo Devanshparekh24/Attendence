@@ -22,10 +22,16 @@ class ApiService {
 
     // POST /attendance
     static async createAttendance(attendanceData) {
-        const response = await router.handle('POST', '/attendance', {
-            body: attendanceData
-        });
-        return response;
+        try {
+            const response = await router.handle('POST', '/attendance', {
+                body: attendanceData
+            });
+            return response;
+
+        } catch (error) {
+
+        }
+
     }
 
     static async createRegister(registerData) {
@@ -66,9 +72,13 @@ class ApiService {
 
 
 
-
-
-
+    // POST /attendance/checkinout
+    static async getCheckInOut(emp_code) {
+        const response = await router.handle('POST', '/attendance/checkinout', {
+            body: { emp_code }
+        });
+        return response;
+    }
 
 
 

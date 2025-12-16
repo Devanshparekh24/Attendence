@@ -9,6 +9,10 @@ export const LocationProvider = ({ children }) => {
     const [address, setAddress] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isCheckedIn, setIsCheckedIn] = useState(false);
+    const [checkInTime, setCheckInTime] = useState('--:-- --');
+    const [checkOutTime, setCheckOutTime] = useState('--:-- --');
+    const [refreshCheckInOut, setRefreshCheckInOut] = useState(null);
 
 
     return (
@@ -22,6 +26,14 @@ export const LocationProvider = ({ children }) => {
                 setError,
                 loading,
                 setLoading,
+                isCheckedIn,
+                setIsCheckedIn,
+                checkInTime,
+                setCheckInTime,
+                checkOutTime,
+                setCheckOutTime,
+                refreshCheckInOut,
+                setRefreshCheckInOut
             }}
         >
             {children}

@@ -3,7 +3,7 @@ import dbConnection from '../dbConnection';
 class CanteenMasterModel {
     // Get all canteen master records
     static async findAll() {
-        const query = "select Code151 from [PAYROLL-1-2025-2026].dbo.emp_master";
+        const query = "select Code from [PAYROLL-1-2025-2026].dbo.emp_master";
         return await dbConnection.executeQuery(query);
     }
 

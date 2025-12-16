@@ -40,14 +40,14 @@ class DatabaseConnection {
       }
     }
   }
-  // Execute a stored procedure with parameters
+  // Execute a stored procedure with parameters (for INSERT/UPDATE/DELETE operations)
   async executeProcedure(procedureName, params = {}) {
     try {
       console.log(`🔌 Preparing to execute procedure: ${procedureName}`);
       console.log(`📦 Parameters:`, params);
 
-      // Build parameter list for EXEC statement
-      const paramList = Object.entries(params).map(([key, value]) => {
+      // Build parameter list for EXEC statement in the order they appear in the object
+      const paramValues = Object.values(params).map(value => {
         let formattedValue;
 
         if (value === null || value === undefined) {
@@ -67,17 +67,63 @@ class DatabaseConnection {
           formattedValue = `'${String(value).replace(/'/g, "''")}'`;
         }
 
-        return `@${key} = ${formattedValue}`;
+        return formattedValue;
       });
 
-      const execQuery = `EXEC ${procedureName} ${paramList.join(', ')}`;
+      const execQuery = `EXEC ${procedureName} ${paramValues.join(', ')}`;
 
       console.log("⚡ Generated Procedure Query:", execQuery);
 
-      // Execute using executeUpdate
+      // Execute using executeUpdate for procedures that don't return data
       const result = await this.executeUpdate(execQuery);
 
       console.log("✅ Procedure executed successfully");
+      return result;
+
+    } catch (error) {
+      console.error("❌ Procedure Execution Error:", error);
+      throw error;
+    }
+  }
+
+  // Execute a stored procedure that returns data (for SELECT operations)
+  async executeProcedureWithResult(procedureName, params = {}) {
+    try {
+      console.log(`🔌 Preparing to execute procedure with result: ${procedureName}`);
+      console.log(`📦 Parameters:`, params);
+
+      // Build parameter list for EXEC statement in the order they appear in the object
+      const paramValues = Object.values(params).map(value => {
+        let formattedValue;
+
+        if (value === null || value === undefined) {
+          formattedValue = 'NULL';
+        } else if (typeof value === 'string') {
+          // Escape single quotes and wrap in quotes
+          formattedValue = `'${value.replace(/'/g, "''")}'`;
+        } else if (value instanceof Date) {
+          // Format date as ISO string and wrap in quotes
+          const dateStr = value.toISOString().slice(0, 19).replace('T', ' ');
+          formattedValue = `'${dateStr}'`;
+        } else if (typeof value === 'number') {
+          // Numbers don't need quotes
+          formattedValue = value;
+        } else {
+          // Fallback: convert to string and quote
+          formattedValue = `'${String(value).replace(/'/g, "''")}'`;
+        }
+
+        return formattedValue;
+      });
+
+      const execQuery = `EXEC ${procedureName} ${paramValues.join(', ')}`;
+
+      console.log("⚡ Generated Procedure Query:", execQuery);
+
+      // Execute using executeQuery to get returned data
+      const result = await this.executeQuery(execQuery);
+
+      console.log("✅ Procedure executed successfully with result");
       return result;
 
     } catch (error) {

@@ -28,7 +28,7 @@ const authenticationRoutes = {
         return await AuthenticationController.createRegister(req);
     },
 
-    // POST /login
+    // // POST /login
     'POST /login': async (req = {}) => {
         return await AuthenticationController.checkLogin(req);
     },

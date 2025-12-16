@@ -62,15 +62,15 @@ class AttendanceModel {
             const androidIdVal = android_id;
             const empId = emp_code;
             // Handle numeric fields that default to NULL or 0 based on schema
-            const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : null; 
-            const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : null; 
-            const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : null; 
-            const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : null; 
-            const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : null; 
-            const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : null; 
-
+            const latIn = latitude_in !== undefined && latitude_in !== null ? latitude_in : null;
+            const latOut = latitude_out !== undefined && latitude_out !== null ? latitude_out : null;
+            const lonIn = longitude_in !== undefined && longitude_in !== null ? longitude_in : null;
+            const lonOut = longitude_out !== undefined && longitude_out !== null ? longitude_out : null;
+            const accIn = accuracy_in !== undefined && accuracy_in !== null ? accuracy_in : null;
+            const accOut = accuracy_out !== undefined && accuracy_out !== null ? accuracy_out : null;
+            const isVisit = attendanceData.Is_Visit !== undefined && attendanceData.Is_Visit !== null ? attendanceData.Is_Visit : 0;
             const result = await dbConnection.executeProcedure("PRC_ATT_CHECKIN_INS", {
-                emp_code: empId, 
+                emp_code: empId,
                 android_id: androidIdVal,
                 latitude_in: latIn,
                 latitude_out: latOut,
@@ -79,7 +79,9 @@ class AttendanceModel {
                 accuracy_in: accIn,
                 accuracy_out: accOut,
                 check_in: checkInVal,
-                check_out: checkOutVal
+                check_out: checkOutVal,
+                Is_Visit: isVisit,
+
             });
 
             console.log("Executing Query:", result); // Debug log
@@ -116,8 +118,15 @@ class AttendanceModel {
     }
 
     // Check-out logic: Updates the latest open record for the employee
-    static async checkout(employeeId, checkoutData) {
-        const { latitude_out, longitude_out, accuracy_out, check_out } = checkoutData;
+    static async checkout(emp_code, checkoutData) {
+        const {
+            latitude_out,
+            longitude_out,
+            accuracy_out,
+            check_out
+        } = checkoutData;
+
+        const empId = emp_code;
 
         const checkOutVal = formatDate(check_out);
         const latOut = latitude_out !== undefined ? latitude_out : 'NULL';
@@ -136,7 +145,7 @@ class AttendanceModel {
                 attendance_id = (
                     SELECT TOP 1 attendance_id
                     FROM Att_EmpAttendance
-                    WHERE employee_id = ${employeeId}
+                    WHERE emp_code = ${empId}
                     AND check_out IS NULL
                     AND check_in >= CAST(GETDATE() AS DATE)
                 AND check_in < DATEADD(DAY, 1, CAST(GETDATE() AS DATE))
@@ -151,24 +160,47 @@ class AttendanceModel {
         if (result > 0) {
             return { success: true, message: "Checkout successful" };
         } else {
-            return { success: false, message: "Checkout failed: No open attendance record found for today." };
+            return {
+                success: false,
+                message: "Please Check In first before checking out",
+                error: "No open attendance record found for today"
+            };
         }
     }
 
     // Get attendance summary for user
-    static async getUserSummary(userId, month, year) {
-        const query = `
-            SELECT
-                COUNT(*) as total_days,
-                SUM(CASE WHEN check_out_time IS NOT NULL THEN 1 ELSE 0 END) as present_days,
-                SUM(CASE WHEN check_out_time IS NULL THEN 1 ELSE 0 END) as incomplete_records
-            FROM Attendance
-            WHERE user_id = ${userId}
-            AND MONTH(date) = ${month}
-            AND YEAR(date) = ${year}
-        `;
-        const result = await dbConnection.executeQuery(query);
-        return result.recordset ? result.recordset[0] : result[0];
+    static async getEmployeeIn_Out(attendanceData) {
+        try {
+            const {
+                emp_code
+            } = attendanceData;
+
+            const empId = emp_code;
+
+            const result = await dbConnection.executeProcedureWithResult("PRC_ATT_GET_DAILY_ATTENDANCE_TIME", {
+                emp_code: empId,
+            });
+
+
+            console.log("Executing Query:", result); // Debug log
+
+            return {
+                success: true,
+                message: "Attendance record retrieved successfully",
+                result
+            }
+        } catch (error) {
+            console.error("SQL Error:", error);
+
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            }
+
+        }
+
+
+
     }
 }
 

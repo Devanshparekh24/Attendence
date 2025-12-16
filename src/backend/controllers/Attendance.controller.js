@@ -98,6 +98,7 @@ class AttendanceController {
         }
     }
 
+
     // POST /attendance
     static async create(req) {
         try {
@@ -107,11 +108,20 @@ class AttendanceController {
                 return {
                     success: false,
                     error: "emp_code, android_id, latitude_in, longitude_in, accuracy_in, check_in are required",
-                    message: "Validation failed"
+                    message: "Validation failed "
                 };
             }
 
             const result = await AttendanceModel.create(attendanceData);
+
+            if (!result.success) {
+                return {
+                    success: false,
+                    message: result.message || "Login failed",
+                    error: result.error || null
+                };
+            }
+
             return {
                 success: true,
                 message: result.message,
@@ -158,20 +168,21 @@ class AttendanceController {
     // POST /attendance/checkout
     static async checkout(req) {
         try {
-            const { employee_id, ...checkoutData } = req.body;
+            const { emp_code, ...checkoutData } = req.body;
 
-            if (!employee_id || !checkoutData.check_out) {
+            if (!emp_code) {
                 return {
                     success: false,
-                    error: "employee_id and check out time is required",
+                    error: "emp_code is required",
                     message: "Validation failed"
                 };
             }
 
-            const result = await AttendanceModel.checkout(employee_id, checkoutData);
+            const result = await AttendanceModel.checkout(emp_code, checkoutData);
             return {
                 success: result.success,
-                message: result.message
+                message: result.message,
+                error: result.error
             };
         } catch (error) {
             console.error("AttendanceController.checkout error:", error);
@@ -183,34 +194,49 @@ class AttendanceController {
         }
     }
 
-    // GET /attendance/user/:userId/summary
-    static async getUserSummary(req) {
+    static async getCheckInTime(req) {
         try {
-            const { userId } = req.params;
-            const { month, year } = req.query || {};
+            const { emp_code } = req.body || {};
 
-            if (!userId || !month || !year) {
+            if (!emp_code) {
                 return {
                     success: false,
-                    error: "User ID, month, and year parameters are required",
-                    data: null
+                    error: "emp_code is required",
+                    data: null,
+                    message: "Validation failed"
                 };
             }
 
-            const data = await AttendanceModel.getUserSummary(userId, month, year);
+            const result = await AttendanceModel.getEmployeeIn_Out({ emp_code });
+
+            console.log("Controller received result:", JSON.stringify(result, null, 2));
+
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: result.message,
+                    data: null,
+                    message: result.message || "Failed to retrieve attendance time"
+                };
+            }
+
+            // Extract the actual data from the nested structure
+            // result.result contains the stored procedure output
+            const recordset = result.result?.recordset || result.result;
+            const attendanceData = Array.isArray(recordset) ? recordset[0] : recordset;
 
             return {
                 success: true,
-                data: data,
-                message: "Attendance summary retrieved successfully"
+                data: attendanceData,
+                message: result.message || "Attendance Time retrieved successfully"
             };
         } catch (error) {
-            console.error("AttendanceController.getUserSummary error:", error);
+            console.error("AttendanceController.getCheckInTime error:", error);
             return {
                 success: false,
                 error: error.message,
                 data: null,
-                message: "Failed to retrieve attendance summary"
+                message: "Failed to retrieve attendance time"
             };
         }
     }

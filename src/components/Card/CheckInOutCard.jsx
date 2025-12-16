@@ -1,9 +1,59 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { ApiService } from '../../backend';
+import { useAuth } from '../../context/AuthContext';
+import { useLocation } from '../../context/LocationContext';
+import formatTime from '../../utils/formatTime';
 
 const CheckInOutCard = () => {
+  const { employeeId } = useAuth();
+  const {
+    checkInTime,
+    setCheckInTime,
+    checkOutTime,
+    setCheckOutTime,
+    setIsCheckedIn,
+    setRefreshCheckInOut
+  } = useLocation();
+
+
+  const getCheckINOut = useCallback(async () => {
+    try {
+      if (!employeeId) {
+        console.log('No employee ID available');
+        return;
+      }
+
+      const response = await ApiService.getCheckInOut(employeeId);
+
+      console.log('Check In time get', response.data);
+
+      if (response.success && response.data) {
+        // Assuming the response.data contains check_in and check_out fields
+        if (response.data.check_in) {
+          setCheckInTime(formatTime(response.data.check_in));
+          setIsCheckedIn(true);
+        }
+        if (response.data.check_out) {
+          setCheckOutTime(formatTime(response.data.check_out));
+          setIsCheckedIn(false);
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching check-in/out times:', error);
+    }
+  }, [employeeId, setCheckInTime, setCheckOutTime, setIsCheckedIn]);
+
+  // Register the refresh function with context
+  useEffect(() => {
+    setRefreshCheckInOut(() => getCheckINOut);
+  }, [getCheckINOut, setRefreshCheckInOut]);
+
+  useEffect(() => {
+    getCheckINOut();
+  }, [getCheckINOut]);
+
   return (
     <View>
       <View className="mb-6 bg-white rounded-xl shadow-md p-6">
@@ -20,7 +70,7 @@ const CheckInOutCard = () => {
               Check In
             </Text>
             <Text variant="labelSmall" className="mt-1 text-gray-500">
-              09:00 AM
+              {checkInTime}
             </Text>
           </View>
 
@@ -39,7 +89,7 @@ const CheckInOutCard = () => {
               Check Out
             </Text>
             <Text variant="labelSmall" className="mt-1 text-gray-500">
-              --:-- --
+              {checkOutTime}
             </Text>
           </View>
         </View>

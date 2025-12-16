@@ -9,6 +9,7 @@ import { ApiService } from '../../backend'
 import { useLocation } from '../../context/LocationContext';
 
 const CheckInButton = () => {
+    
     const {
         location, setLocation,
         address, setAddress,
