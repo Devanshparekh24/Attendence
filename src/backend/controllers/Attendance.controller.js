@@ -196,6 +196,8 @@ class AttendanceController {
 
     static async getCheckInTime(req) {
         try {
+                        console.log("Controller received result123:");
+
             const { emp_code } = req.body || {};
 
             if (!emp_code) {
@@ -209,7 +211,7 @@ class AttendanceController {
 
             const result = await AttendanceModel.getEmployeeIn_Out({ emp_code });
 
-            console.log("Controller received result:", JSON.stringify(result, null, 2));
+            console.log("Controller received result123:", JSON.stringify(result, null, 2));
 
             if (!result.success) {
                 return {

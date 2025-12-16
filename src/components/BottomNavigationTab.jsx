@@ -23,11 +23,11 @@ const SCREENS = {
     label: 'Attendance',
     icon: 'calendar',
   },
-  Visit: {
-    component: VisitScreen,
-    label: 'Visit',
-    icon: 'location',
-  },
+  // Visit: {
+  //   component: VisitScreen,
+  //   label: 'Visit',
+  //   icon: 'location',
+  // },
   Settings: {
     component: SettingsScreen,
     label: 'Settings',

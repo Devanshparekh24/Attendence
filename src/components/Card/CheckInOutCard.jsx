@@ -1,10 +1,11 @@
 import { View, Text } from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
+// import React, { useEffect, useState, useCallback } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ApiService } from '../../backend';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from '../../context/LocationContext';
 import formatTime from '../../utils/formatTime';
+import useGetCheckInOut from '../../hooks/getCheckInOut';
 
 const CheckInOutCard = () => {
   const { employeeId } = useAuth();
@@ -17,42 +18,23 @@ const CheckInOutCard = () => {
     setRefreshCheckInOut
   } = useLocation();
 
+  const getCheckINOut = useGetCheckInOut();
 
-  const getCheckINOut = useCallback(async () => {
-    try {
-      if (!employeeId) {
-        console.log('No employee ID available');
-        return;
-      }
-
-      const response = await ApiService.getCheckInOut(employeeId);
-
-      console.log('Check In time get', response.data);
-
-      if (response.success && response.data) {
-        // Assuming the response.data contains check_in and check_out fields
-        if (response.data.check_in) {
-          setCheckInTime(formatTime(response.data.check_in));
-          setIsCheckedIn(true);
-        }
-        if (response.data.check_out) {
-          setCheckOutTime(formatTime(response.data.check_out));
-          setIsCheckedIn(false);
-        }
-      }
-    } catch (error) {
-      console.log('Error fetching check-in/out times:', error);
-    }
-  }, [employeeId, setCheckInTime, setCheckOutTime, setIsCheckedIn]);
+  console.log('🎨 CheckInOutCard rendered');
+  console.log('🎨 Current checkInTime:', checkInTime);
+  console.log('🎨 Current checkOutTime:', checkOutTime);
 
   // Register the refresh function with context
-  useEffect(() => {
-    setRefreshCheckInOut(() => getCheckINOut);
-  }, [getCheckINOut, setRefreshCheckInOut]);
+  // Note: When storing a function in useState, wrap it to prevent immediate execution
+  // useEffect(() => {
+  //   console.log('🔄 Registering refresh function');
+  //   setRefreshCheckInOut(() => getCheckINOut);
+  // }, [getCheckINOut, setRefreshCheckInOut]);
 
-  useEffect(() => {
-    getCheckINOut();
-  }, [getCheckINOut]);
+  // useEffect(() => {
+  //   console.log('🔄 Component mounted, calling getCheckINOut');
+  //   getCheckINOut();
+  // }, [getCheckINOut]);
 
   return (
     <View>
@@ -98,4 +80,7 @@ const CheckInOutCard = () => {
   );
 };
 
+
+
 export default CheckInOutCard;
+

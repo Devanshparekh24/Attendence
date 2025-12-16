@@ -55,7 +55,7 @@
 // export default AttendanceScreen;
 
 import { ScrollView, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-paper';
 import StatusCard from '../components/Card/StatusCard';
@@ -64,11 +64,19 @@ import Switch_IN_OUT from '../components/Switch_Button/Switch_IN_OUT';
 import HistroyCard from '../components/Card/HistroyCard';
 import GoogleMap from '../components/Map/GoogleMap';
 import AttedenceSegmetButton from '../components/SegmentButtons/AttedenceSegmetButton';
+import { useFocusEffect } from '@react-navigation/native';
+import useGetCheckInOut from '../hooks/getCheckInOut';
 
 const AttendanceScreen = () => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
 
+ const RefreshAtt = useGetCheckInOut();
 
+  useFocusEffect(
+    useCallback(() => {
+      RefreshAtt();
+    }, [RefreshAtt])
+  );
 
   return (
     <ScrollView
@@ -83,7 +91,7 @@ const AttendanceScreen = () => {
 
       {/* Status Card */}
       <View className='mt-4'>
-        <StatusCard />
+        {/* <StatusCard /> */}
       </View>
 
       {/* Check In/Out Card */}
@@ -104,7 +112,7 @@ const AttendanceScreen = () => {
       {/* History Card */}
 
       <View className=''>
-        <HistroyCard />
+        {/* <HistroyCard /> */}
       </View>
     </ScrollView>
   );

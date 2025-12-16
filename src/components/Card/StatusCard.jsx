@@ -5,14 +5,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const StatusCard = () => {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
 
-  const currentTime = new Date().toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-
-
-
   return (
     <View>
       <View className="mt-2 mb-6 bg-white rounded-xl shadow-md p-6">

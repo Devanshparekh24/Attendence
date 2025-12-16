@@ -8,11 +8,12 @@ import { requestLocationPermission } from '../../utils/requestLocationPermission
 import { useLocation } from '../../context/LocationContext';
 import { useAuth } from '../../context/AuthContext';
 import DeviceInfo from 'react-native-device-info';
+import useGetCheckInOut from '../../hooks/getCheckInOut';
 
 const Switch_IN_OUT = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  var eventfire = false;
   const {
     isCheckedIn,
     setIsCheckedIn,
@@ -20,9 +21,10 @@ const Switch_IN_OUT = () => {
     setLocation,
     refreshCheckInOut
   } = useLocation();
-
   const { employeeId } = useAuth();
 
+
+const RefreshAtt = useGetCheckInOut();
 
   // Get Current Location wrapped in Promise
   const getCurrentLocationPromise = () => {
@@ -103,19 +105,14 @@ const Switch_IN_OUT = () => {
 
       if (response.success) {
         // Alert.alert("Success", "Checked In Successfully!");
-        console.log("Check In response", response.data);
-        
-        // Refresh check-in/out times from database
-        if (refreshCheckInOut) {
-          await refreshCheckInOut();
-        }
-      } 
+        console.log("✅ Check In response", response.data);
+      }
       else {
         throw new Error(response.message);
 
       }
 
-    } 
+    }
     catch (error) {
       console.error("Check-In Error:", error);
       setError(error.message);
@@ -156,13 +153,8 @@ const Switch_IN_OUT = () => {
       const response = await ApiService.checkout(payload);
 
       if (response.success) {
-        Alert.alert("Success", "Checked Out Successfully!");
         console.log("Check Out response", response);
-        
-        // Refresh check-in/out times from database
-        if (refreshCheckInOut) {
-          await refreshCheckInOut();
-        }
+
       } else {
         throw new Error(response.messae || response.error || "First Do Check In then 'Check Out'");
       }
@@ -175,25 +167,28 @@ const Switch_IN_OUT = () => {
       setLoading(false);
     }
   };
-  const onValueChange = (value) => {
-    try {
-      if (value) {
-        // CHECK IN
-        setIsCheckedIn(true);
-        handleCheckIn();
+const onValueChange = async (value) => {
+  try {
+    if (value) {
+      console.log("Check IN");
+      setIsCheckedIn(true);
 
-      } else {
-        // CHECK OUT
-        setIsCheckedIn(false);
-        handleCheckOut();
-      }
+      await handleCheckIn();   // ⏳ wait for API success
+    } else {
+      console.log("Check Out");
+      setIsCheckedIn(false);
 
-
-    } catch (error) {
-      console.log('onValueChange', error);
-
+      await handleCheckOut();  // ⏳ wait for API success
     }
+
+    console.log("🔄 Refreshing attendance");
+    await RefreshAtt();        // ✅ now fetches latest data
+
+  } catch (error) {
+    console.log('onValueChange', error);
   }
+};
+
 
   return (
 
