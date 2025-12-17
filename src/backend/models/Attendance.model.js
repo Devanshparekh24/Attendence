@@ -28,13 +28,36 @@ class AttendanceModel {
     }
 
     // Get attendance for specific user
-    static async findByUserId(userId, limit = 30) {
-        const query = `
-            SELECT TOP ${limit} * FROM Attendance
-            WHERE user_id = ${userId}
-            ORDER BY date DESC, check_in_time DESC
-        `;
-        return await dbConnection.executeQuery(query);
+    static async getByMontlyAttendeceReport(attendanceData) {
+
+        try {
+            const {
+                emp_code
+            } = attendanceData;
+
+            const empId = emp_code;
+
+            const result = await dbConnection.executeProcedureWithResult("PRC_ATT_GET_MONTHLY_ATTENDANCE_TIME", {
+                emp_code: empId,
+
+            });
+
+            console.log('get Employee Montly Record', result);
+
+            return {
+                success: true,
+                message: "Monthly Employee Attendance record retrieved successfully",
+                result
+            };
+        } catch (error) {
+            console.error("SQL Error:", error);
+
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            };
+        }
+
     }
 
     // Create new attendance record
@@ -103,19 +126,7 @@ class AttendanceModel {
 
     }
 
-    // Generic Update (Admin/Manual edit)
-    static async update(id, updateData) {
-        const updates = [];
-        if (updateData.check_out_time) updates.push(`check_out_time = '${updateData.check_out_time}'`);
-        if (updateData.location) updates.push(`location = '${updateData.location}'`);
-        // Add other fields as necessary
 
-        if (updates.length === 0) return { success: false, message: "No fields to update" };
-
-        const query = `UPDATE Att_EmpAttendance SET ${updates.join(', ')}, updated_at = GETDATE() WHERE attendance_id = ${id}`;
-        await dbConnection.executeUpdate(query);
-        return { success: true, message: "Attendance record updated successfully" };
-    }
 
     // Check-out logic: Updates the latest open record for the employee
     static async checkout(checkoutData) {
@@ -163,6 +174,10 @@ class AttendanceModel {
             };
         }
     }
+
+
+
+
 
     // Get attendance summary for user
     static async getEmployeeIn_Out(attendanceData) {

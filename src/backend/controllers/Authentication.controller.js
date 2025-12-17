@@ -10,6 +10,7 @@ class AuthenticationController {
         try {
             const authenticationData = req.body;
 
+            
             if (!authenticationData.emp_code) {
                 return {
                     success: false,

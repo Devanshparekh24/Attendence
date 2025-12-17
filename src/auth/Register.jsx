@@ -22,6 +22,7 @@ const Register = () => {
 
 
     const [loading, setLoading] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const {
         employeeId,
         setEmployeeId,
@@ -29,6 +30,8 @@ const Register = () => {
         setPassword,
         showPassword,
         setShowPassword,
+        confirmPassword,
+        setConfirmPassword
     } = useAuth();
 
 
@@ -72,6 +75,7 @@ const Register = () => {
                                     className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800"
                                     placeholder="Enter your Employee ID"
                                     placeholderTextColor="#9CA3AF"
+                                    keyboardType='numeric'
                                     value={employeeId}
                                     onChangeText={setEmployeeId}
                                     autoCapitalize="none"
@@ -109,32 +113,37 @@ const Register = () => {
                                     )}
                                 </TouchableOpacity>
 
-                                {/* Re-type Password Filed */}
-                                <Text className="mt-4 text-sm font-semibold text-gray-700 mb-2">
-                                    Re-type Password
+                            </View>
+
+                            {/* Confirm Password Input */}
+                            <View className="mb-6">
+                                <Text className="text-sm font-semibold text-gray-700 mb-2">
+                                    Confirm Password
                                 </Text>
                                 <TextInput
-                                    className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800 mb-4"
-                                    placeholder="Enter  your Re-type Password"
+                                    className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800"
+                                    placeholder="Re-enter your password"
                                     placeholderTextColor="#9CA3AF"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry={!showPassword}
+                                    value={confirmPassword}
+                                    onChangeText={setConfirmPassword}
+                                    secureTextEntry={!showConfirmPassword}
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     editable={!loading}
                                 />
-
-
-                            </View>
-                            <View>
-
-
+                                <TouchableOpacity
+                                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-4 top-9"
+                                    disabled={loading}
+                                >
+                                    {showConfirmPassword ? (
+                                        <Ionicons name="eye" size={20} color="#6B7280" />
+                                    ) : (
+                                        <Ionicons name="eye-off" size={20} color="#6B7280" />
+                                    )}
+                                </TouchableOpacity>
                                 <RegisterButton />
-
                             </View>
-
-
                         </View>
                     </View>
                 </ScrollView>

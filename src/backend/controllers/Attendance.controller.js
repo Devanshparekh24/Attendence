@@ -194,6 +194,8 @@ class AttendanceController {
         }
     }
 
+
+
     static async getCheckInTime(req) {
         try {
             console.log("Controller received result123:");
@@ -242,6 +244,55 @@ class AttendanceController {
             };
         }
     }
+
+    //GET /attendance/monthly-report
+
+    static async getMontlyReport(req = {}) {
+        try {
+            const { emp_code } = req.query || {};
+
+            console.log('getMontlyReport emp_code:', emp_code);
+
+            if (!emp_code) {
+                return {
+                    success: false,
+                    error: "emp_code is required",
+                    data: null,
+                    message: "Validation failed"
+                };
+            }
+
+            const result = await AttendanceModel.getByMontlyAttendeceReport({ emp_code });
+
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: result.message,
+                    data: null,
+                    message: result.message || "Failed to retrieve monthly report"
+                };
+            }
+
+            // Extract the recordset from the result
+            const data = result.result?.recordset || result.result || [];
+
+            return {
+                success: true,
+                message: result.message,
+                data: data
+            };
+
+        } catch (error) {
+            console.error("AttendanceController.getMontlyReport error:", error);
+            return {
+                success: false,
+                error: error.message,
+                data: null,
+                message: "Failed to retrieve monthly report"
+            };
+        }
+    }
+
 }
 
 export default AttendanceController;

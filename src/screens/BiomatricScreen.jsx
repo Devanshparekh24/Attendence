@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, BackHandler, Button, Image } from 'react-native';
+import { Text, View, BackHandler, Button, Image, Alert } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWindowDimensions } from 'react-native';
 import Applogo from '../assets/images/Attendece_App_logo.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
 const BiometricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
     const rnBiometrics = new ReactNativeBiometrics();
+    const {
+        employeeId,
+        setEmployeeId,
+        loginUser,   // ✅ ADD THIS
+
+    } = useAuth();
 
     useEffect(() => {
         rnBiometrics.isSensorAvailable()
@@ -25,25 +33,74 @@ const BiometricScreen = ({ navigation }) => {
             });
     }, []);
 
-    const handleBiometricAuth = () => {
-        rnBiometrics.simplePrompt({ promptMessage: 'Confirm identity' })
-            .then((resultObject) => {
-                const { success } = resultObject;
 
-                if (success) {
-                    console.log('successful biometrics provided');
-                    navigation.replace('Login');
-                    // Navigate to the Main App (Bottom Tabs)
-                } else {
-                    console.log('user cancelled biometric prompt');
-                    BackHandler.exitApp();
-                    // navigation.replace('MainApp');
-                }
-            })
-            .catch(() => {
-                console.log('biometrics failed');
+    const handleBiometricAuth = async () => {
+        try {
+            const { success } = await rnBiometrics.simplePrompt({
+                promptMessage: 'Confirm identity',
             });
+            
+            if (!success) {
+                console.log('❌ User cancelled biometric');
+                BackHandler.exitApp();
+                return;
+            }
+
+            console.log('✅ Biometric success');
+
+            // 🔍 Read AsyncStorage ONCE
+            const storedData = await AsyncStorage.getItem('userData');
+            console.log('📦 AsyncStorage userData:', storedData);
+
+            if (!storedData) {
+                // 🔴 No stored user → Login
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+                return;
+            }
+
+            // 🟢 Safe parse
+            const parsedData = JSON.parse(storedData);
+            console.log('👤 Employee ID:', parsedData.emp_code);
+
+            // 🟢 Update context
+            setEmployeeId(parsedData.emp_code);
+
+            const response = await loginUser(
+                parsedData.emp_code,
+                parsedData.emp_pass   // ⚠️ make sure key name is correct
+            );
+
+            if (response.success) {
+                setEmployeeId(parsedData.emp_code);
+
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'MainApp' }],
+                });
+            } else {
+                console.log('❌ Stored credentials invalid');
+
+                Alert.alert("Login Failed", response.message || "Invalid credentials");
+
+                // optional: clear storage
+                // await AsyncStorage.removeItem('userData');
+
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+            }
+
+
+        } catch (error) {
+            console.log('❌ Biometric error:', error);
+            BackHandler.exitApp();
+        }
     };
+
 
     const handleExist = () => {
 
@@ -72,8 +129,8 @@ const BiometricScreen = ({ navigation }) => {
                     <View className="items-center w-full">
                         <Image
                             source={Applogo}
-                             className="w-24 h-24 mb-4"
-                                resizeMode="contain"
+                            className="w-24 h-24 mb-4"
+                            resizeMode="contain"
                         />
                         <Text className="text-base text-gray-800 mb-5 text-center">
                             Authenticate to continue

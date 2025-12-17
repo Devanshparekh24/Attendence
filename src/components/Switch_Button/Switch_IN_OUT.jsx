@@ -107,7 +107,11 @@ const Switch_IN_OUT = () => {
         // Alert.alert("Success", "Checked In Successfully!");
         console.log("✅ Check In response", response.data);
       }
+
       else {
+
+                setIsCheckedIn(false);
+
         throw new Error(response.message);
 
       }
@@ -156,8 +160,10 @@ const Switch_IN_OUT = () => {
         console.log("✅ Check Out response", response);
 
       } else {
+                        setIsCheckedIn(true);
+
         // Show the actual error message from backend
-        const errorMsg = response.message || response.error ;
+        const errorMsg = response.message || response.error;
         console.error("❌ Checkout failed:", errorMsg);
         console.error("❌ Full response:", response);
         throw new Error(errorMsg);

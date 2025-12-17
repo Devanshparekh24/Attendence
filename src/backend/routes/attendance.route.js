@@ -39,7 +39,13 @@ const attendanceRoutes = {
     // PUT /attendance/:id
     'PUT /attendance/:id': async (req = {}) => {
         return await AttendanceController.update(req);
+    },
+
+    //GET /attendance/monthly-report
+    'GET /attendance/monthly-report': async (req = {}) => {
+        return await AttendanceController.getMontlyReport(req);
     }
+
 };
 
 export default attendanceRoutes;

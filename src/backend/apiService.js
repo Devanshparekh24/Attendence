@@ -70,8 +70,6 @@ class ApiService {
         }
     }
 
-
-
     // POST /attendance/checkinout
     static async getCheckInOut(emp_code) {
         const response = await router.handle('POST', '/attendance/checkinout', {
@@ -79,9 +77,14 @@ class ApiService {
         });
         return response;
     }
+    //GET /attendance/monthly-report
 
-
-
+    static async getMonthlyReport(emp_code) {
+        const response = await router.handle('GET', '/attendance/monthly-report', {
+            query: { emp_code }
+        });
+        return response;
+    }
     // Raw query executor (for custom queries)
     static async raw(query) {
         // For raw queries, we still need direct database access

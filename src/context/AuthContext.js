@@ -1,31 +1,64 @@
 import React, { createContext, useState, useContext } from 'react';
+import DeviceInfo from 'react-native-device-info';
+import { ApiService } from '../backend';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
+  // 🔹 Auth States
+  const [employeeId, setEmployeeId] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-    // You can also add other shared state related to location here, e.g., address, error
+  // 🔹 CENTRALIZED LOGIN FUNCTION (IMPORTANT)
+  const loginUser = async (empId, empPass) => {
+    try {
+      const androidId = await DeviceInfo.getAndroidId();
+      const deviceName = await DeviceInfo.getDeviceName();
 
-    const [employeeId, setEmployeeId] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    return (
-        <AuthContext.Provider
-            value={{
+      console.log('🔐 loginUser()', {
+        empId,
+        empPass,
+        androidId,
+        deviceName,
+      });
 
-                employeeId,
-                setEmployeeId,
-                password,
-                setPassword,
-                showPassword,
-                setShowPassword,
+      const response = await ApiService.checkLogin({
+        employeeId: empId,
+        password: empPass,
+        androidId,
+        deviceName,
+      });
 
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+      return response;
+    } catch (error) {
+      console.log('❌ loginUser error:', error);
+      throw error;
+    }
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        // states
+        employeeId,
+        setEmployeeId,
+        password,
+        setPassword,
+        confirmPassword,
+        setConfirmPassword,
+        showPassword,
+        setShowPassword,
+
+        // functions
+        loginUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => useContext(AuthContext);

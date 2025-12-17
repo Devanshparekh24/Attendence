@@ -36,6 +36,12 @@ const useGetCheckInOut = () => {
 
       setCheckInTime(formattedCheckIn);
       setCheckOutTime(formattedCheckOut);
+      if (formattedCheckIn && formattedCheckOut) 
+        setIsCheckedIn(false);
+      else if (formattedCheckIn)
+        setIsCheckedIn(true);
+      else
+        setIsCheckedIn(false);
 
       console.log('✅ Check-In:', formattedCheckIn);
       console.log('✅ Check-Out:', formattedCheckOut);

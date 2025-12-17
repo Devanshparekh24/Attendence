@@ -1,117 +1,52 @@
-import { StyleSheet, Text, TouchableOpacity, View, PermissionsAndroid, Platform, Alert } from 'react-native'
-import React, { useState } from 'react'
-import Geolocation from '@react-native-community/geolocation';
-import DeviceInfo from 'react-native-device-info';
+import React, { useState } from 'react';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { Table, Row } from 'react-native-table-component';
 
-import { ApiService } from '../../backend'
-import { useLocation } from '../../context/LocationContext';
-const CheckInButton = () => {
-      const {
-        location, setLocation,
-        address, setAddress,
-        error, setError
-      } = useLocation();
-      const [loading, setLoading] = useState(false);
+const Demo = () => {
+  const [tableHead] = useState(['Head', 'Head2', 'Head3', 'Head4', 'Head5', 'Head6', 'Head7', 'Head8', 'Head9']);
+  const [widthArr] = useState([40, 60, 80, 100, 120, 140, 160, 180, 200]);
 
-    const requestLocationPermission = async () => {
-        if (Platform.OS === 'android') {
-            try {
-                const granted = await PermissionsAndroid.request(
-                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                    {
-                        title: 'Location Permission',
-                        message: 'App needs access to your location for check-in',
-                        buttonNeutral: 'Ask Me Later',
-                        buttonNegative: 'Cancel',
-                        buttonPositive: 'OK',
-                    }
-                );
-                return granted === PermissionsAndroid.RESULTS.GRANTED;
-            } catch (err) {
-                console.warn(err);
-                return false;
-            }
-        }
-        return true;
-    };
-
-    const handleCheckIn = async () => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const hasPermission = await requestLocationPermission();
-            if (!hasPermission) {
-                setError('Location permission denied');
-                setLoading(false);
-                return;
-            }
-
-            Geolocation.getCurrentPosition(
-        (position) => {
-          console.log("FAST position:", position);
-          const { latitude, longitude, accuracy, speed } = position.coords;
-          const locationData = { latitude, longitude, accuracy, speed };
-          setLocation(locationData);
-
-          getAddressFromCoords(latitude, longitude);
-          setLoading(false);
-        },
-        (err) => {
-          console.log("ERROR:", err);
-          // Retry with HIGH ACCURACY only if first attempt fails
-          Geolocation.getCurrentPosition(
-            (position) => {
-              console.log("HIGH ACCURACY position:", position);
-              const { latitude, longitude, accuracy, speed } = position.coords;
-              const locationData = { latitude, longitude, accuracy, speed };
-              setLocation(locationData);
-
-              getAddressFromCoords(latitude, longitude);
-              setLoading(false);
-            },
-            (retryErr) => {
-              console.log("Retry failed:", retryErr);
-              setError("Unable to get location. Ensure GPS is ON and try again.");
-              setLoading(false);
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 8000,
-              maximumAge: 0,
-              forceRequestLocation: true,
-              showLocationDialog: true,
-            }
-          );
-        },
-        {
-          enableHighAccuracy: false, // FASTEST
-          timeout: 4000, // Don't wait too long
-          maximumAge: 60000, // Accept cached location up to 1 minute
-        }
-      );
-
-        } catch (err) {
-            console.error('Unexpected error:', err);
-            setError('An error occurred');
-            setLoading(false);
-        }
+  const tableData = [];
+  for (let i = 0; i < 30; i += 1) {
+    const rowData = [];
+    for (let j = 0; j < 9; j += 1) {
+      rowData.push(`${i}${j}`);
     }
+    tableData.push(rowData);
+  }
 
-    return (
+  return (
+    <View style={styles.container}>
+      <ScrollView horizontal={true}>
         <View>
-            <TouchableOpacity
-                onPress={handleCheckIn}
-                disabled={loading}
-                className={`bg-primary-500 py-3 px-8 rounded-lg w-full items-center mb-2.5 ${loading ? 'opacity-70' : ''}`}>
-                <Text className='text-primary-50 text-base font-semibold'>
-                    {loading ? 'Checking In...' : 'Check In'}
-                </Text>
-            </TouchableOpacity>
-            {error && <Text className="text-red-500 text-center mt-1">{error}</Text>}
+          <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+            <Row data={tableHead} widthArr={widthArr} style={styles.header} textStyle={styles.text} />
+          </Table>
+          <ScrollView style={styles.dataWrapper}>
+            <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
+              {tableData.map((rowData, index) => (
+                <Row
+                  key={index}
+                  data={rowData}
+                  widthArr={widthArr}
+                  style={[styles.row, index % 2 && { backgroundColor: '#F7F6E7' }]}
+                  textStyle={styles.text}
+                />
+              ))}
+            </Table>
+          </ScrollView>
         </View>
-    )
-}
+      </ScrollView>
+    </View>
+  );
+};
 
-export default CheckInButton
+export default Demo;
 
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+  header: { height: 50, backgroundColor: '#537791' },
+  text: { textAlign: 'center', fontWeight: '100' },
+  dataWrapper: { marginTop: -1 },
+  row: { height: 40, backgroundColor: '#E7E6E1' },
+});
