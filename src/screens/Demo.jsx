@@ -18,7 +18,7 @@ const Demo = () => {
     useCallback(() => {
       try {
 
-        console.log('Screen focused – refresh data');
+        console.log('Screen focused  refresh data');
         getEmployeeMontlyAttendance();
 
       } catch (error) {

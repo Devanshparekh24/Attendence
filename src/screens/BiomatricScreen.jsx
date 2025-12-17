@@ -6,6 +6,7 @@ import { useWindowDimensions } from 'react-native';
 import Applogo from '../assets/images/Attendece_App_logo.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
+import CustomAlert from '../utils/CustomAlert';
 
 const BiometricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
@@ -83,8 +84,10 @@ const BiometricScreen = ({ navigation }) => {
             } else {
                 console.log('❌ Stored credentials invalid');
 
-                Alert.alert("Login Failed", response.message || "Invalid credentials");
-
+                CustomAlert.alert(
+                'Login Failed',
+                response.message || 'Invalid credentials'
+                );
                 // optional: clear storage
                 // await AsyncStorage.removeItem('userData');
 
