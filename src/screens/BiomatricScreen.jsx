@@ -34,6 +34,7 @@ const BiometricScreen = ({ navigation }) => {
             });
     }, []);
 
+    
 
     const handleBiometricAuth = async () => {
         try {

@@ -13,7 +13,6 @@ import useGetCheckInOut from '../../hooks/getCheckInOut';
 const Switch_IN_OUT = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  var eventfire = false;
   const {
     isCheckedIn,
     setIsCheckedIn,
@@ -77,7 +76,10 @@ const Switch_IN_OUT = () => {
 
       // Validate employee ID
       if (!employeeId || employeeId.trim() === '') {
+        setIsCheckedIn(false);
         throw new Error('Employee ID is required. Please log in again.');
+
+
       }
 
       const locationData = await getCurrentLocationPromise();
@@ -110,7 +112,7 @@ const Switch_IN_OUT = () => {
 
       else {
 
-                setIsCheckedIn(false);
+        setIsCheckedIn(false);
 
         throw new Error(response.message);
 
@@ -160,7 +162,7 @@ const Switch_IN_OUT = () => {
         console.log("✅ Check Out response", response);
 
       } else {
-                        setIsCheckedIn(true);
+        setIsCheckedIn(true);
 
         // Show the actual error message from backend
         const errorMsg = response.message || response.error;

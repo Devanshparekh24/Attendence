@@ -25,6 +25,7 @@ const useGetCheckInOut = () => {
 
       const response = await ApiService.getCheckInOut(employeeId);
       if (!response?.success || !response?.data) {
+        setIsCheckedIn(false);
         console.log('❌ Invalid API response123:', response);
         return;
       }
@@ -36,7 +37,7 @@ const useGetCheckInOut = () => {
 
       setCheckInTime(formattedCheckIn);
       setCheckOutTime(formattedCheckOut);
-      if (formattedCheckIn && formattedCheckOut) 
+      if (formattedCheckIn && formattedCheckOut)
         setIsCheckedIn(false);
       else if (formattedCheckIn)
         setIsCheckedIn(true);
