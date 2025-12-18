@@ -91,7 +91,7 @@ const AttendanceScreen = () => {
 
       {/* Status Card */}
       <View className='mt-4'>
-        {/* <StatusCard /> */}
+        <StatusCard />
       </View>
 
       {/* Check In/Out Card */}

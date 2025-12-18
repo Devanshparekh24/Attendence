@@ -9,6 +9,7 @@ import { useLocation } from '../../context/LocationContext';
 import { useAuth } from '../../context/AuthContext';
 import DeviceInfo from 'react-native-device-info';
 import useGetCheckInOut from '../../hooks/getCheckInOut';
+import CustomAlert from '../../utils/CustomAlert';
 
 const Switch_IN_OUT = () => {
   const [loading, setLoading] = useState(false);
@@ -122,6 +123,7 @@ const Switch_IN_OUT = () => {
     catch (error) {
       console.error("Check-In Error:", error);
       setError(error.message);
+
       Alert.alert("Error", error.message);
     } finally {
       setLoading(false);

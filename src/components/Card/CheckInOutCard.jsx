@@ -23,19 +23,7 @@ const CheckInOutCard = () => {
   console.log('🎨 CheckInOutCard rendered');
   console.log('🎨 Current checkInTime:', checkInTime);
   console.log('🎨 Current checkOutTime:', checkOutTime);
-
-  // Register the refresh function with context
-  // Note: When storing a function in useState, wrap it to prevent immediate execution
-  // useEffect(() => {
-  //   console.log('🔄 Registering refresh function');
-  //   setRefreshCheckInOut(() => getCheckINOut);
-  // }, [getCheckINOut, setRefreshCheckInOut]);
-
-  // useEffect(() => {
-  //   console.log('🔄 Component mounted, calling getCheckINOut');
-  //   getCheckINOut();
-  // }, [getCheckINOut]);
-
+ 
   return (
     <View>
       <View className="mb-6 bg-white rounded-xl shadow-md p-6">
