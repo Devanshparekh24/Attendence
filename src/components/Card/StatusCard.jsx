@@ -23,7 +23,7 @@ const StatusCard = () => {
             }`}
           >
             <Ionicons
-              name={checkInTime && !checkOutTime ? 'checkmark-circle' : 'log-in'}
+              name={checkInTime && !checkOutTime ? 'checkmark-circle' : 'log-out'}
               size={50}
               color={checkInTime && !checkOutTime ? '#22c55e' : '#3b82f6'}
             />
@@ -32,12 +32,12 @@ const StatusCard = () => {
           <Text className="mt-4 font-semibold text-gray-900">
             {checkInTime && !checkOutTime
               ? 'Checked In'
-              : 'Not Checked In'}
+              : 'Checked Out'}
           </Text>
 
           <Text className="mt-2 text-gray-600">
             {/* optional message */}
-            {checkOutTime ? 'Session completed' : ''}
+            {checkOutTime ? 'Today Attendance completed' : ''}
           </Text>
 
         </View>

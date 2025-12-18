@@ -28,14 +28,14 @@ const SCREENS = {
   //   label: 'Visit',
   //   icon: 'location',
   // },
-  Settings: {
-    component: SettingsScreen,
-    label: 'Settings',
-    icon: 'settings',
-  },
+  // Settings: {
+  //   component: SettingsScreen,
+  //   label: 'Settings',
+  //   icon: 'settings',
+  // },
   Demo: {
     component: Demo,
-    label: 'Demo',
+    label: 'Attendence List',
     icon: 'list',
   },
 };

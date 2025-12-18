@@ -110,26 +110,57 @@ const Demo = () => {
           <Card className="shadow-md overflow-hidden">
             <DataTable theme={{ colors: { primary: '#2563EB' } }}>
               {/* Header */}
-              <DataTable.Header style={{ backgroundColor: '#F3F4F6' }}>
+              <DataTable.Header
+                style={{
+                  backgroundColor: '#F3F4F6',
+                  minHeight: 56,          // 👈 same height as rows
+                  paddingVertical: 6,     // 👈 vertical spacing
+                }}
+              >
                 <DataTable.Title
-                  style={{ flex: 1.5 }}
-                  textStyle={{ fontWeight: '700', color: '#1F2937' }}
+                  style={{ flex: 1.5, justifyContent: 'center' }}
+                  textStyle={{
+                    fontWeight: '700',
+                    color: '#1F2937',
+                    fontSize: 12,
+                  }}
+                >
+                  Employee ID
+                </DataTable.Title>
+
+                <DataTable.Title
+                  style={{ flex: 1.5, justifyContent: 'center' }}
+                  textStyle={{
+                    fontWeight: '700',
+                    color: '#1F2937',
+                    fontSize: 12,
+                  }}
                 >
                   Date
                 </DataTable.Title>
 
                 <DataTable.Title
-                  style={{ flex: 1.5 }}
+                  style={{ flex: 1.5, justifyContent: 'center' }}
                   numeric
-                  textStyle={{ fontWeight: '700', color: '#1F2937' }}
+                  textStyle={{
+                    fontWeight: '700',
+                    color: '#1F2937',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}
                 >
                   Check In
                 </DataTable.Title>
 
                 <DataTable.Title
-                  style={{ flex: 1.5 }}
+                  style={{ flex: 1.5, justifyContent: 'center' }}
                   numeric
-                  textStyle={{ fontWeight: '700', color: '#1F2937' }}
+                  textStyle={{
+                    fontWeight: '700',
+                    color: '#1F2937',
+                    fontSize: 12,
+                    textAlign: 'center',
+                  }}
                 >
                   Check Out
                 </DataTable.Title>
@@ -139,49 +170,72 @@ const Demo = () => {
               {attendanceData.length > 0 ? (
                 attendanceData.map((record, index) => (
                   <View key={index}>
-                    <DataTable.Row style={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB' }}>
-                      <DataTable.Cell style={{ flex: 1.5 }}>
-                        <Text className="text-gray-900 font-semibold">
-                          {record.Date ? new Date(record.Date).toLocaleDateString('en-IN', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                          }) : '-'}
+                    <DataTable.Row
+                      style={{
+                        backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB',
+                        minHeight: 56,              // 👈 row height
+                        paddingVertical: 6,         // 👈 vertical spacing
+                      }}
+                    >
+                      {/* Employee ID */}
+                      <DataTable.Cell style={{ flex: 1.5, justifyContent: 'center' }} numeric>
+                        <Text className="text-gray-700 font-semibold text-xs">
+                          {record.CheckInTime ? record.Code : '-'}
                         </Text>
                       </DataTable.Cell>
 
-                      <DataTable.Cell style={{ flex: 1.5 }} numeric>
-                        <View className="bg-green-100 px-2.5 py-1 rounded-lg">
-                          <Text className="text-green-700 font-semibold text-xs">
-                            {record.CheckInTime ? new Date(record.CheckInTime).toLocaleTimeString('en-IN', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: true
-                            }) : '-'}
+                      {/* Date */}
+                      <DataTable.Cell style={{ flex: 1.5, justifyContent: 'center' }}>
+                        <Text className="text-gray-700 font-semibold text-xs">
+                          {record.Date
+                            ? new Date(record.Date).toLocaleDateString('en-IN', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: '2-digit',
+                            })
+                            : '-'}
+                        </Text>
+                      </DataTable.Cell>
+
+                      {/* Check In Time */}
+                      <DataTable.Cell style={{ flex: 1.5, justifyContent: 'center' }} numeric>
+                        <View className="bg-green-100 px-3 py-1.5 rounded-lg">
+                          <Text className="text-green-700 font-semibold text-xs text-center">
+                            {record.CheckInTime
+                              ? new Date(record.CheckInTime).toLocaleTimeString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                              })
+                              : '-'}
                           </Text>
                         </View>
                       </DataTable.Cell>
 
-                      <DataTable.Cell style={{ flex: 1.5 }} numeric>
-                        <View className="bg-red-100 px-2.5 py-1 rounded-lg">
-                          <Text className="text-red-700 font-semibold text-xs">
-                            {record.CheckOutTime ? new Date(record.CheckOutTime).toLocaleTimeString('en-IN', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              hour12: true
-                            }) : '-'}
+                      {/* Check Out Time */}
+                      <DataTable.Cell style={{ flex: 1.5, justifyContent: 'center' }} numeric>
+                        <View className="bg-red-100 px-3 py-1.5 rounded-lg">
+                          <Text className="text-red-700 font-semibold text-xs text-center">
+                            {record.CheckOutTime
+                              ? new Date(record.CheckOutTime).toLocaleTimeString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                              })
+                              : '-'}
                           </Text>
                         </View>
                       </DataTable.Cell>
                     </DataTable.Row>
+
                     {index < attendanceData.length - 1 && <Divider />}
                   </View>
                 ))
               ) : (
-                <DataTable.Row>
-                  <DataTable.Cell style={{ flex: 4 }}>
+                <DataTable.Row style={{ minHeight: 120 }}>
+                  <DataTable.Cell style={{ flex: 4, justifyContent: 'center' }}>
                     <View className="py-10 items-center w-full">
-                      <Text className="text-4xl mb-2">📋</Text>
+                      <Text className="text-4xl mb-3">📋</Text>
                       <Text className="text-gray-500 text-center font-medium">
                         No attendance records found
                       </Text>
@@ -189,6 +243,7 @@ const Demo = () => {
                   </DataTable.Cell>
                 </DataTable.Row>
               )}
+
             </DataTable>
           </Card>
         )}

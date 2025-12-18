@@ -187,12 +187,12 @@ const Switch_IN_OUT = () => {
         console.log("Check IN");
         setIsCheckedIn(true);
 
-        await handleCheckIn();   // ⏳ wait for API success
+        await handleCheckIn();  
       } else {
         console.log("Check Out");
         setIsCheckedIn(false);
 
-        await handleCheckOut();  // ⏳ wait for API success
+        await handleCheckOut();  
       }
 
       console.log("🔄 Refreshing attendance");
