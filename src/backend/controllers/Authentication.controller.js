@@ -2,7 +2,6 @@ import AuthenticationModel from "../models/Authentication.model.js";
 
 
 
-
 class AuthenticationController {
 
     // POST /authentication

@@ -85,6 +85,19 @@ class ApiService {
         });
         return response;
     }
+
+
+
+    //GET /basic-details/:emp_code
+    static async getEmployeeBasicDetails(Code) {
+        const response = await router.handle('GET', '/basic-details/emp_code', {
+            params: { Code } 
+        }
+
+        );
+        return response;
+    }
+
     // Raw query executor (for custom queries)
     static async raw(query) {
         // For raw queries, we still need direct database access

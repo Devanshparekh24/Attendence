@@ -54,10 +54,8 @@
 
 // export default AttendanceScreen;
 
-import { ScrollView, Text, View } from 'react-native';
-import React, { useCallback, useState } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Button } from 'react-native-paper';
+import { ScrollView, View } from 'react-native';
+import React, { useCallback } from 'react';
 import StatusCard from '../components/Card/StatusCard';
 import CheckInOutCard from '../components/Card/CheckInOutCard';
 import Switch_IN_OUT from '../components/Switch_Button/Switch_IN_OUT';
@@ -68,9 +66,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import useGetCheckInOut from '../hooks/getCheckInOut';
 
 const AttendanceScreen = () => {
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
 
- const RefreshAtt = useGetCheckInOut();
+  const RefreshAtt = useGetCheckInOut();
 
   useFocusEffect(
     useCallback(() => {

@@ -14,6 +14,8 @@ export {
     AttendanceModel,
     AuthenticationController,
     AuthenticationModel,
+    EmployeeDetailsModel,
+    EmployeeDetailController,
 
     // Database
     dbConnection,
