@@ -56,7 +56,10 @@ const VerifyRegisterButton = ({ timer }) => {
                 Alert.alert("Success", "Registered Successfully!", [
                     {
                         text: "OK",
-                        onPress: () => navigation.navigate('Login')
+                        onPress: () => navigation.reset({
+                            index: 0,
+                            routes: [{ name: 'MainApp' }],
+                        })
                     }
                 ]);
             } else {
