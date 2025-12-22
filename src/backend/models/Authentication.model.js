@@ -93,8 +93,8 @@ class AuthenticationModel {
 
             const empId = emp_code;
 
-            const checkverifyUser = await dbConnection.executeProcedure("PRC_ATT_VERIFY_EMP", {
-                    emp_code: empId
+            const checkverifyUser = await dbConnection.executeProcedureWithResult("PRC_ATT_VERIFY_EMP", {
+                emp_code: empId
             });
             return {
                 success: true,

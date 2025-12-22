@@ -16,11 +16,11 @@ const VerifyButton = () => {
 
 
 
-    const handleOtpScreen = () => {
+    const handleOtpScreen = (otp, mobile) => {
 
         if (password === confirmPassword) {
             console.log("Navigating to OTP Screen");
-            navigation.navigate('OtpScreen');
+            navigation.navigate('OtpScreen', { otp: otp, mobile: mobile });
 
         } else {
             Alert.alert(
@@ -40,7 +40,12 @@ const VerifyButton = () => {
             console.log("Verify User:", response);
             if (response.success) {
                 console.log("Verify User Successful:", response.message);
-                handleOtpScreen();
+
+                // Get OTP and mobile from response
+                const otp = response.data?.otp;
+                const mobile = response.data?.mobile;
+
+                handleOtpScreen(otp, mobile);
             } else {
                 console.log("Verify User Failed:", response.message);
                 Alert.alert("Verification Failed", response.message || "Failed to verify employee ID.");

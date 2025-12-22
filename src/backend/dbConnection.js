@@ -116,7 +116,7 @@ class DatabaseConnection {
         return formattedValue;
       });
 
-      const execQuery = `EXEC ${procedureName} ${paramValues.join(', ')}`;
+      const execQuery = `SET NOCOUNT ON; EXEC ${procedureName} ${paramValues.join(', ')}`;
 
       console.log("⚡ Generated Procedure Query:", execQuery);
 

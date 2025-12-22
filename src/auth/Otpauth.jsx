@@ -1,11 +1,43 @@
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
-
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
+import VerifyRegisterButton from '../components/Buttons/VerifyRegisterButton';
+import { ApiService } from '../backend';
 
 const Otpauth = () => {
 
-    const [otp, setOtp] = useState(['', '', '', '', '', '']);
+    // Use global state from context
+    const { otp, setOtp, employeeId } = useAuth();
+
     const inputRefs = useRef([]);
+    const route = useRoute();
+    const navigation = useNavigation();
+
+    // Get mobile from navigation params for display
+    const mobileNumber = route.params?.mobile;
+
+    // Timer state (2 minutes = 120 seconds)
+    const [timer, setTimer] = useState(120);
+    
+    // Timer effect
+    useEffect(() => {
+        let interval;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prevTimer) => prevTimer - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
+
+    // Format time (MM:SS)
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    };
+
 
     const handleOtpChange = (value, index) => {
         // Only accept numbers
@@ -27,20 +59,34 @@ const Otpauth = () => {
         }
     };
 
-    const handleVerify = () => {
-        const otpValue = otp.join('');
-        if (otpValue.length === 6) {
-            Alert.alert('Success', `OTP Verified: ${otpValue}`);
-        } else {
-            Alert.alert('Error', 'Please enter all 6 digits');
+    const handleResend = async () => {
+        try {
+            setOtp(['', '', '', '', '', '']);
+            inputRefs.current[0]?.focus();
+            setTimer(120); // Reset timer
+
+            // Call verifyUser again to regenerate and resend OTP
+            // We need employeeId from context
+            const response = await ApiService.verifyUser({ emp_code: employeeId });
+
+            if (response.success && response.data?.otp) {
+
+                Alert.alert('OTP Resent', `A new OTP has been sent.`);
+
+                console.log("OTP Resent", response.data.otp);
+
+                // Navigation setParams to update the otp in the current screen's route params
+                navigation.setParams({ otp: response.data.otp });
+
+            } else {
+                Alert.alert('Error', response.message || 'Failed to resend OTP');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'An error occurred while resending OTP');
+            console.error(error);
         }
     };
 
-    const handleResend = () => {
-        setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
-        Alert.alert('OTP Resent', 'A new OTP has been sent to your phone');
-    };
     return (
         <View className="flex-1 bg-white justify-center items-center px-6">
             {/* Header */}
@@ -51,6 +97,11 @@ const Otpauth = () => {
                 <Text className="text-base text-gray-600 text-center">
                     Enter the 6-digit code sent to your phone
                 </Text>
+                {mobileNumber ? (
+                    <Text className="text-sm text-gray-500 mt-2">
+                        OTP sent on this number {mobileNumber}
+                    </Text>
+                ) : null}
             </View>
 
             {/* OTP Input Boxes */}
@@ -59,7 +110,7 @@ const Otpauth = () => {
                     <TextInput
                         key={index}
                         ref={(ref) => (inputRefs.current[index] = ref)}
-                        className="w-16 h-16 border-2 border-blue-300 rounded-lg text-center text-2xl font-bold text-gray-900"
+                        className="w-10 h-16 border-2 border-blue-300 rounded-lg text-center text-2xl font-bold text-gray-900"
                         maxLength={1}
                         keyboardType="number-pad"
                         value={digit}
@@ -71,28 +122,18 @@ const Otpauth = () => {
                 ))}
             </View>
 
-            {/* Verify Button */}
-            <TouchableOpacity
-                className="w-full bg-blue-600 rounded-lg py-4 mb-4"
-                onPress={handleVerify}
-            >
-                <Text className="text-white text-center text-lg font-semibold">
-                    Verify OTP
-                </Text>
-            </TouchableOpacity>
+            {/* Verify & Register Button Component */}
+            <VerifyRegisterButton timer={timer} />
 
             {/* Resend Container */}
-            <View className="flex-row justify-center items-center gap-2">
+            <View className="flex-row justify-center items-center gap-2 mt-4">
                 <Text className="text-gray-600">Didn't receive the code?</Text>
-                <TouchableOpacity onPress={handleResend}>
-                    <Text className="text-blue-600 font-semibold">Resend</Text>
+                <TouchableOpacity onPress={handleResend} disabled={timer > 0}>
+                    <Text className={`font-semibold ${timer > 0 ? 'text-gray-400' : 'text-blue-600'}`}>
+                        {timer > 0 ? `Resend in ${formatTime(timer)}` : 'Resend'}
+                    </Text>
                 </TouchableOpacity>
             </View>
-
-            {/* Timer (optional) */}
-            <Text className="text-gray-500 text-sm mt-6">
-                Resend OTP in 30 seconds
-            </Text>
         </View>
     )
 }

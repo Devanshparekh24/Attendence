@@ -1,7 +1,5 @@
 import AuthenticationModel from "../models/Authentication.model.js";
-
-
-
+import { sendSMS } from "../utils/smsService.js";
 
 
 class AuthenticationController {
@@ -107,10 +105,34 @@ class AuthenticationController {
                     error: result.error || null
                 };
             }
+
+            // Generate OTP
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log("Generated OTP:", otp);
+
+            // Extract mobile number from result
+            // The result structure depends on the driver, it might be an array or an object with 'recordset'
+            const dbResult = result.checkverifyUser;
+            const rows = Array.isArray(dbResult) ? dbResult : (dbResult.recordset || []);
+            const userData = rows.length > 0 ? rows[0] : null;
+
+            const mobileNumber = userData?.MobileNo || userData?.Mobile || userData?.mobile || userData?.phone;
+
+            if (mobileNumber) {
+                // Send SMS
+                await sendSMS(mobileNumber, otp);
+            } else {
+                console.warn("No mobile number found for user, cannot send SMS.");
+            }
+
             return {
                 success: true,
                 message: result.message,
-                data: authenticationData
+                data: {
+                    ...authenticationData,
+                    otp: otp,
+                    mobile: mobileNumber
+                }
             };
         } catch (error) {
             console.error("AuthenticationController.verfiyUser error:", error);
