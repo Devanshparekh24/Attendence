@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState( '' );
 
   // 🔹 CENTRALIZED LOGIN FUNCTION (IMPORTANT)
   const loginUser = async (empId, empPass) => {
@@ -51,6 +52,8 @@ export const AuthProvider = ({ children }) => {
         setConfirmPassword,
         showPassword,
         setShowPassword,
+        phoneNumber,
+        setPhoneNumber,
 
         // functions
         loginUser,

@@ -82,7 +82,36 @@ class AuthenticationModel {
                 message: error.originalError?.message || error.message
             };
         }
+
+
+
     }
+
+    static async verfiyUser(authenticationData) {
+        try {
+            const { emp_code } = authenticationData;
+
+            const empId = emp_code;
+
+            const checkverifyUser = await dbConnection.executeProcedure("PRC_ATT_VERIFY_EMP", {
+                    emp_code: empId
+            });
+            return {
+                success: true,
+                message: "EmployeeId verified successfully",
+                checkverifyUser
+            };
+
+        } catch (error) {
+            console.error("SQL Error:", error);
+
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            };
+        }
+    }
+
 }
 
 

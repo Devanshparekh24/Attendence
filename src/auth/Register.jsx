@@ -15,7 +15,9 @@ import Applogo from '../assets/images/Attendece_App_logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RegisterButton from '../components/Buttons/RegisterButton';
 import { useAuth } from '../context/AuthContext';
+import OtpButton from '../components/Buttons/VerifyButton';
 import { ApiService } from '../../backend';
+import VerifyButton from '../components/Buttons/VerifyButton';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -66,7 +68,7 @@ const Register = () => {
               {/* Login Form */}
               <View className="w-full">
                 {/* Employee ID Input */}
-                <View className="">
+                <View className="mb-4">
                   <Text className="text-sm font-semibold text-gray-700 mb-2">
                     Employee ID
                   </Text>
@@ -84,8 +86,8 @@ const Register = () => {
                 </View>
 
                 {/* Password Input */}
-                <View className="mb-2">
-                  <Text className="text-sm font-semibold text-gray-700 ">
+                <View className="mb-4">
+                  <Text className="text-sm font-semibold text-gray-700 mb-2">
                     Password
                   </Text>
 
@@ -102,7 +104,7 @@ const Register = () => {
                   />
                   <TouchableOpacity
                     onPress={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-3 mt-5"
+                    className="absolute right-4 top-9"
                     disabled={loading}
                   >
                     {showPassword ? (
@@ -114,7 +116,7 @@ const Register = () => {
                 </View>
 
                 {/* Confirm Password Input */}
-                <View className="mb-6">
+                <View className="mb-4">
                   <Text className="text-sm font-semibold text-gray-700 mb-2">
                     Confirm Password
                   </Text>
@@ -140,8 +142,9 @@ const Register = () => {
                       <Ionicons name="eye-off" size={20} color="#6B7280" />
                     )}
                   </TouchableOpacity>
-                  <RegisterButton />
                 </View>
+                {/* <RegisterButton /> */}
+                <VerifyButton />
               </View>
             </View>
           </ScrollView>

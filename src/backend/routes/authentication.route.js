@@ -32,6 +32,14 @@ const authenticationRoutes = {
     'POST /login': async (req = {}) => {
         return await AuthenticationController.checkLogin(req);
     },
+    'POST /authentication': async (req = {}) => {
+        return await AuthenticationController.createRegister(req);
+    },
+    'POST /authentication/verify': async (req = {}) => {
+        return await AuthenticationController.verfiyUser(req);
+    },
+
+
 
     // PUT /authentication/:id
     'PUT /authentication/:id': async (req = {}) => {

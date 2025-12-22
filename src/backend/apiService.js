@@ -70,6 +70,22 @@ class ApiService {
         }
     }
 
+    static async verifyUser(authenticationData) {
+        try {
+            const response = await router.handle('POST', '/authentication/verify', {
+                body: authenticationData
+            });
+            return response;
+
+        } catch (error) {
+            console.log(error)
+            return {
+                success: false,
+                message: error.message || "Verification request failed"
+            };
+        }
+    }
+
     // POST /attendance/checkinout
     static async getCheckInOut(emp_code) {
         const response = await router.handle('POST', '/attendance/checkinout', {
@@ -91,7 +107,7 @@ class ApiService {
     //GET /basic-details/:emp_code
     static async getEmployeeBasicDetails(Code) {
         const response = await router.handle('GET', '/basic-details/emp_code', {
-            params: { Code } 
+            params: { Code }
         }
 
         );
