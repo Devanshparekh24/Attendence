@@ -13,6 +13,8 @@ export const AuthProvider = ({ children }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
+      const [timer, setTimer] = useState(120);
+  
 
   // 🔹 CENTRALIZED LOGIN FUNCTION (IMPORTANT)
   const loginUser = async (empId, empPass) => {

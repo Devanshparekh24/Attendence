@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import PersonalInfo from '../components/Card/PersonalInfo';
 import Employeeheader from '../components/Header/Employeeheader';
 import useEmployeeBasicInfo from '../hooks/getEmployeeBasicInfo';
-import Quickstates from '../components/Stats/Quickstates';
+// import Quickstates from '../components/Stats/Quickstates';
 
 
 const HomeScreen = () => {
@@ -24,7 +24,7 @@ const HomeScreen = () => {
 
                 {/* <TotalDays /> */}
 
-                <Quickstates />
+                {/* <Quickstates /> */}
             </ScrollView>
         </SafeAreaView>
     )

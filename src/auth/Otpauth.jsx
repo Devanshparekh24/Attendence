@@ -8,7 +8,7 @@ import { ApiService } from '../backend';
 const Otpauth = () => {
 
     // Use global state from context
-    const { otp, setOtp, employeeId } = useAuth();
+    const { otp, setOtp, employeeId, timer, setTimer } = useAuth();
 
     const inputRefs = useRef([]);
     const route = useRoute();
@@ -18,7 +18,7 @@ const Otpauth = () => {
     const mobileNumber = route.params?.mobile;
 
     // Timer state (2 minutes = 120 seconds)
-    const [timer, setTimer] = useState(120);
+    // const [timer, setTimer] = useState(120);
     
     // Timer effect
     useEffect(() => {
@@ -123,7 +123,7 @@ const Otpauth = () => {
             </View>
 
             {/* Verify & Register Button Component */}
-            <VerifyRegisterButton timer={timer} />
+            <VerifyRegisterButton  />
 
             {/* Resend Container */}
             <View className="flex-row justify-center items-center gap-2 mt-4">

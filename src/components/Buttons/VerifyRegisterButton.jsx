@@ -5,10 +5,10 @@ import { useAuth } from '../../context/AuthContext';
 import { ApiService } from '../../backend';
 import DeviceInfo from 'react-native-device-info';
 
-const VerifyRegisterButton = ({ timer }) => {
+const VerifyRegisterButton = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { otp, employeeId, confirmPassword } = useAuth();
+    const { otp, employeeId, confirmPassword, timer } = useAuth();
     const [loading, setLoading] = useState(false);
 
     // Get OTP from navigation params (passed from previous screen)
