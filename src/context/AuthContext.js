@@ -62,6 +62,10 @@ export const AuthProvider = ({ children }) => {
 
         // functions
         loginUser,
+
+        // Timer
+        timer,
+        setTimer,
       }}
     >
       {children}

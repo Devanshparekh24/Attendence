@@ -98,8 +98,8 @@ const Otpauth = () => {
                     Enter the 6-digit code sent to your phone
                 </Text>
                 {mobileNumber ? (
-                    <Text className="text-sm text-gray-500 mt-2">
-                        OTP sent on this number {mobileNumber}
+                    <Text className="text-sm text-gray-500 mt-2 ">
+                        OTP sent on this number <Text className='font-bold text-blue-600'> {mobileNumber} </Text>
                     </Text>
                 ) : null}
             </View>
