@@ -82,9 +82,6 @@ class AuthenticationModel {
                 message: error.originalError?.message || error.message
             };
         }
-
-
-
     }
 
     static async verfiyUser(authenticationData) {
@@ -112,7 +109,34 @@ class AuthenticationModel {
         }
     }
 
+
+    static async deRegisterDevice(authenticationData) {
+        try {
+            const { emp_code } = authenticationData;
+
+            const empId = emp_code;
+
+            const deRegisterUser = await dbConnection.executeProcedureWithResult("PRC_ATT_EMP_DEREGISTER", {
+                emp_code: empId
+            });
+
+            return {
+                success: true,
+                message: "Employee deregistered successfully",
+                deRegisterUser
+            };
+
+        }
+        catch (error) {
+            console.error("SQL Error:", error);
+            return {
+                success: false,
+                message: error.originalError?.message || error.message
+            };
+        }
+    }
 }
+
 
 
 export default AuthenticationModel;

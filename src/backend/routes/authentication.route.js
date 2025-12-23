@@ -39,12 +39,12 @@ const authenticationRoutes = {
         return await AuthenticationController.verfiyUser(req);
     },
 
-
-
-    // PUT /authentication/:id
-    'PUT /authentication/:id': async (req = {}) => {
-        return await AuthenticationController.update(req);
+    // PUT /authentication/deregister
+    'PUT /authentication/deregister': async (req = {}) => {
+        return await AuthenticationController.deRegisterDevice(req);
     }
+
+
 };
 
 export default authenticationRoutes;

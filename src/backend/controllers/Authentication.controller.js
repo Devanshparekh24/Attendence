@@ -133,6 +133,8 @@ class AuthenticationController {
                     otp: otp,
                     mobile: mobileNumber
                 }
+
+
             };
         } catch (error) {
             console.error("AuthenticationController.verfiyUser error:", error);
@@ -140,6 +142,47 @@ class AuthenticationController {
                 success: false,
                 error: error.message,
                 message: "Failed to verify user"
+            };
+        }
+    }
+
+
+    static async deRegisterDevice(req) {
+        try {
+            const authenticationData = req.body;
+
+            if (!authenticationData.emp_code) {
+                return {
+                    success: false,
+                    error: "Emp_Code is required",
+                    message: "Validation failed"
+                };
+            }
+
+            const result = await AuthenticationModel.deRegisterDevice(authenticationData);
+
+            if (!result.success) {
+                return {
+                    success: false,
+                    message: result.message || "Deregistration failed",
+                    error: result.error || null
+                };
+            }
+
+            return {
+                success: true,
+                message: result.message,
+                data: {
+                    ...authenticationData
+                }
+            };
+        }
+        catch (error) {
+            console.error("AuthenticationController.deRegisterDevice error:", error);
+            return {
+                success: false,
+                error: error.message,
+                message: "Failed to deregister device"
             };
         }
     }

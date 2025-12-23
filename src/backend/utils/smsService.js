@@ -1,12 +1,14 @@
 export const sendSMS = async (mobileNumber, otp) => {
     try {
-        const message = `${otp} is your OTP for Password change. Do not share it with anyone. Spectrum Dyes and Chemicals`;
+        // const message = `${otp} is your OTP for Password change. Do not share it with anyone. Spectrum Dyes and Chemicals`;
+        const message = `Your OTP for Attendance Application is ${otp}. Do not share this code with anyone. Spectrum Dyes`;
 
         const queryParams = new URLSearchParams({
             'user': 'spectrum ',
             'password': '27ffd59b98XX',
             'mobiles': mobileNumber,
-            'senderid': 'SDCHRD',
+            // 'senderid': 'SDCHRD',
+            'senderid': 'SDCITM',
             'sms': message,
             'accusage': '1',
             'tempid': '1707175828259999737'
@@ -23,7 +25,11 @@ export const sendSMS = async (mobileNumber, otp) => {
             body: queryParams.toString()
         });
 
+        // if (response.status !== 'success') {
+        //     console.log(response.reason);
+        // }
         const responseText = await response.text();
+
         console.log("SMS Response:", responseText);
         return responseText;
     } catch (error) {

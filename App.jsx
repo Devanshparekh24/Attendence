@@ -14,6 +14,9 @@ import { AuthProvider } from './src/context/AuthContext';
 import Login from './src/auth/Login';
 import Register from './src/auth/Register';
 import Otpauth from './src/auth/Otpauth';
+import DeRegister from './src/screens/DeRegisterScreen';
+import DeRegisterOtp from './src/auth/DeRegisterOtp';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -54,6 +57,9 @@ const App = () => {
                 <Stack.Screen name="Register" component={Register} />
                 <Stack.Screen name="OtpScreen" component={Otpauth} />
                 <Stack.Screen name="MainApp" component={BottomNavigationTab} />
+                <Stack.Screen name="DeRegister" component={DeRegister} />
+                <Stack.Screen name="DeRegisterOtp" component={DeRegisterOtp} />
+
               </Stack.Navigator>
             </NavigationContainer>
           </LocationProvider>

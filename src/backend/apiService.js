@@ -114,6 +114,23 @@ class ApiService {
         return response;
     }
 
+    // PUT /authentication/deregister
+
+    static async deRegisterDevice(authenticationData) {
+        try {
+            const response = await router.handle('PUT', '/authentication/deregister', {
+                body: authenticationData
+            });
+            return response;
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+
+
+
     // Raw query executor (for custom queries)
     static async raw(query) {
         // For raw queries, we still need direct database access

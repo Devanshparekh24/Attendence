@@ -143,7 +143,6 @@ const Register = () => {
                     )}
                   </TouchableOpacity>
                 </View>
-                {/* <RegisterButton /> */}
                 <VerifyButton />
               </View>
             </View>
