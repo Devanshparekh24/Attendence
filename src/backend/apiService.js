@@ -136,13 +136,31 @@ class ApiService {
             return response;
         } catch (error) {
             console.log(error)
-             return {
+            return {
                 success: false,
                 message: error.message || "Request failed"
             };
         }
     }
 
+    static async getAppVersionDetails(versionData) {
+        try {
+
+            const response = await router.handle('POST', '/app-version', {
+                body: {
+                    version_code: versionData.versionCode
+                }
+            });
+            return response;
+
+        } catch (error) {
+            console.log('error', error);
+            return {
+                success: false,
+                message: error.message || "App version request failed"
+            };
+        }
+    }
 
 
 

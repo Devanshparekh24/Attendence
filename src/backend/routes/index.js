@@ -3,6 +3,7 @@ import userRoutes from './user.js';
 import attendanceRoutes from './attendance.route.js';
 import authenticationRoutes from './authentication.route.js'
 import employeeDetailRoutes from './employeeDetail.route.js';
+import appVersionRoutes from './appversion.route.js';
 
 // Combine all routes
 const routes = {
@@ -10,8 +11,9 @@ const routes = {
     ...userRoutes,
     ...attendanceRoutes,
     ...authenticationRoutes,
-    ...employeeDetailRoutes
-    
+    ...employeeDetailRoutes,
+    ...appVersionRoutes
+
 };
 
 // Simple router class (simulating Express.js router)

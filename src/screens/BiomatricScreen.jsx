@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../utils/CustomAlert';
 
+
 const BiometricScreen = ({ navigation }) => {
     const [biometricAvailable, setBiometricAvailable] = useState(false);
     const rnBiometrics = new ReactNativeBiometrics();

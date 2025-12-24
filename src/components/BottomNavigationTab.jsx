@@ -10,6 +10,8 @@ import VisitScreen from '../screens/VisitScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import Demo from '../screens/Demo'; // Keeping Demo if needed, or replace/remove
 
+
+
 const BottomTab = createBottomTabNavigator();
 
 const SCREENS = {
@@ -41,6 +43,7 @@ const SCREENS = {
 };
 
 const BottomNavigationTab = () => {
+
   const insets = useSafeAreaInsets();
 
   return (
