@@ -9,6 +9,7 @@ const VerifyButton = () => {
     const { employeeId,
         password,
         confirmPassword,
+        setOtp
 
     } = useAuth();
     const navigation = useNavigation();
@@ -31,11 +32,14 @@ const VerifyButton = () => {
     }
     const handleEmployeeidVerify = async () => {
         try {
+
+            
             if (!employeeId) {
                 Alert.alert("Missing Employee ID");
                 return;
             }
-
+            //Clear previous OTP
+            setOtp(['', '', '', '', '', '']);
             const response = await ApiService.verifyUser({ emp_code: employeeId });
             console.log("Verify User:", response);
             if (response.success) {

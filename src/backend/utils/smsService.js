@@ -11,7 +11,7 @@ export const sendSMS = async (mobileNumber, otp) => {
             'senderid': 'SDCITM',
             'sms': message,
             'accusage': '1',
-            'tempid': '1707175828259999737'
+            'tempid': '1707176647544250539'
         });
 
         console.log("Sending SMS to:", mobileNumber);

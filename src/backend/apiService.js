@@ -128,6 +128,21 @@ class ApiService {
 
     }
 
+    static async initiateDeregistration(authenticationData) {
+        try {
+            const response = await router.handle('POST', '/authentication/initiate-deregister', {
+                body: authenticationData
+            });
+            return response;
+        } catch (error) {
+            console.log(error)
+             return {
+                success: false,
+                message: error.message || "Request failed"
+            };
+        }
+    }
+
 
 
 

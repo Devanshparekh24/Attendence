@@ -8,7 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 const VerifyRegisterButton = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { otp, employeeId, confirmPassword, timer } = useAuth();
+    const { otp, setOtp, employeeId, confirmPassword, timer } = useAuth();
     const [loading, setLoading] = useState(false);
 
     // Get OTP from navigation params (passed from previous screen)
@@ -62,6 +62,7 @@ const VerifyRegisterButton = () => {
                         })
                     }
                 ]);
+                setOtp(['', '', '', '', '', '']);
             } else {
                 Alert.alert("Registration Failed", response.message || "Something went wrong during registration.");
             }

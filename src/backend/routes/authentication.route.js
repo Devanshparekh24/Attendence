@@ -42,6 +42,11 @@ const authenticationRoutes = {
     // PUT /authentication/deregister
     'PUT /authentication/deregister': async (req = {}) => {
         return await AuthenticationController.deRegisterDevice(req);
+    },
+
+    // POST /authentication/initiate-deregister
+    'POST /authentication/initiate-deregister': async (req = {}) => {
+        return await AuthenticationController.initiateDeregistration(req);
     }
 
 

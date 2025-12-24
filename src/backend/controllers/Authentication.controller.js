@@ -1,4 +1,5 @@
 import AuthenticationModel from "../models/Authentication.model.js";
+import EmployeeDetailsModel from "../models/EmployeeDetail.model.js";
 import { sendSMS } from "../utils/smsService.js";
 
 
@@ -183,6 +184,68 @@ class AuthenticationController {
                 success: false,
                 error: error.message,
                 message: "Failed to deregister device"
+            };
+        }
+    }
+
+    static async initiateDeregistration(req) {
+        try {
+            const { emp_code } = req.body;
+
+            if (!emp_code) {
+                return {
+                    success: false,
+                    error: "Emp_Code is required",
+                    message: "Validation failed"
+                };
+            }
+
+            // Get Employee Details to find mobile number
+            const details = await EmployeeDetailsModel.getBasicDetails({ Code: emp_code });
+
+            if (!details.success || !details.data) {
+                return {
+                    success: false,
+                    message: "Employee details not found."
+                };
+            }
+
+            const dbResult = details.data;
+            const rows = Array.isArray(dbResult) ? dbResult : (dbResult.recordset || []);
+            const userData = rows.length > 0 ? rows[0] : null;
+
+            const mobileNumber = userData?.MobileNo || userData?.Mobile || userData?.mobile || userData?.phone;
+
+            if (!mobileNumber) {
+                return {
+                    success: false,
+                    message: "Mobile number not found for this employee."
+                };
+            }
+
+            // Generate OTP
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log("Generated Deregister OTP:", otp);
+
+            // Send SMS
+            await sendSMS(mobileNumber, otp);
+
+            return {
+                success: true,
+                message: "OTP sent successfully",
+                data: {
+                    emp_code,
+                    otp,
+                    mobile: mobileNumber
+                }
+            };
+
+        } catch (error) {
+            console.error("AuthenticationController.initiateDeregistration error:", error);
+            return {
+                success: false,
+                error: error.message,
+                message: "Failed to initiate deregistration"
             };
         }
     }

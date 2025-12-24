@@ -1,5 +1,5 @@
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { ApiService } from '../backend';
@@ -29,7 +29,7 @@ const DeRegisterOtp = () => {
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [timer]);
+    }, [timer, setTimer]);
 
     // Format time (MM:SS)
     const formatTime = (seconds) => {
@@ -67,7 +67,7 @@ const DeRegisterOtp = () => {
 
             // Call verifyUser again to regenerate and resend OTP
             // We need employeeId from context
-            const response = await ApiService.deRegisterDevice({ emp_code: employeeId });
+            const response = await ApiService.initiateDeregistration({ emp_code: employeeId });
 
             if (response.success && response.data?.otp) {
 

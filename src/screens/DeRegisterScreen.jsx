@@ -21,7 +21,7 @@ const DeRegister = () => {
 
         try {
             setLoading(true);
-            const response = await ApiService.deRegisterDevice({ emp_code: employeeId });
+            const response = await ApiService.initiateDeregistration({ emp_code: employeeId });
 
             if (response.success && response.data?.otp) {
                 Alert.alert("OTP Sent", "An OTP has been sent to your registered mobile number.", [

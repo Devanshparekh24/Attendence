@@ -19,7 +19,7 @@ const Otpauth = () => {
 
     // Timer state (2 minutes = 120 seconds)
     // const [timer, setTimer] = useState(120);
-    
+
     // Timer effect
     useEffect(() => {
         let interval;
@@ -40,6 +40,8 @@ const Otpauth = () => {
 
 
     const handleOtpChange = (value, index) => {
+
+        
         // Only accept numbers
         if (!/^\d*$/.test(value)) return;
 
@@ -123,7 +125,7 @@ const Otpauth = () => {
             </View>
 
             {/* Verify & Register Button Component */}
-            <VerifyRegisterButton  />
+            <VerifyRegisterButton />
 
             {/* Resend Container */}
             <View className="flex-row justify-center items-center gap-2 mt-4">
