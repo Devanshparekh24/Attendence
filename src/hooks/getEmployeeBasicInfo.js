@@ -24,7 +24,7 @@ const useEmployeeBasicInfo = () => {
     )
     useEffect(() => {
         getEmployeeBasicInfo();
-    }, []);
+    }, [getEmployeeBasicInfo]);
 
     return employeeBasicInfo;
 }

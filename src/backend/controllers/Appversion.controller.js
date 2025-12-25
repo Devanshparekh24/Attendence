@@ -5,7 +5,6 @@ class AppVersionController {
         try {
             const versionData = req.body;
 
-            const result = await AppVersionModel.getAppVersion(versionData);
             if (!versionData.version_code) {
                 return {
                     success: false,
@@ -13,6 +12,8 @@ class AppVersionController {
                     message: "Validation failed"
                 }
             }
+
+            const result = await AppVersionModel.getAppVersion(versionData);
 
             return {
                 success: true,
