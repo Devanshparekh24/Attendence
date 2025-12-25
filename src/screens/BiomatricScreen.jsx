@@ -49,7 +49,7 @@ const BiometricScreen = ({ navigation }) => {
                 return;
             }
 
-            console.log('✅ Biometric success');
+            console.debug('✅ Biometric success');
 
             // 🔍 Read AsyncStorage ONCE
             const storedData = await AsyncStorage.getItem('userData');

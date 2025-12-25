@@ -15,7 +15,7 @@ import Applogo from '../assets/images/Attendece_App_logo.png';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
 import LoginButton from '../components/Buttons/LoginButton';
-// import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+
 
 const Login = () => {
   const {
@@ -37,7 +37,11 @@ const Login = () => {
   };
 
   return (
- 
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
       <SafeAreaView className="flex-1 bg-[#F5F5F5]">
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
@@ -128,6 +132,7 @@ const Login = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

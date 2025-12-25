@@ -1,9 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Linking, BackHandler } from 'react-native';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
+import DeviceInfo from 'react-native-device-info';
+import { ApiService } from '../../backend';
 
-const AppVersionUpdate = ({ visible, updateData, onDismiss }) => {
-    if (!updateData) return null;
+const AppVersionUpdate = () => {
+    const [visible, setVisible] = useState(false);
+    const [updateData, setUpdateData] = useState(null);
+
+    const CURRENT_VERSION_CODE = Number(DeviceInfo.getBuildNumber());
+
+    const checkforUpdate = useCallback(async () => {
+        try {
+            console.log('Checking for updates...', CURRENT_VERSION_CODE);
+            const response = await ApiService.getAppVersionDetails({
+                versionCode: CURRENT_VERSION_CODE
+            });
+
+            if (response.success && response.data && response.data.length > 0) {
+                const serverVersion = response.data[0];
+                const serverVersionCode = Number(serverVersion.version_code || serverVersion.Version_Code || 0);
+
+                console.log(`Update Check: Server (${serverVersionCode}) > Local (${CURRENT_VERSION_CODE})`);
+
+                if (serverVersionCode > CURRENT_VERSION_CODE) {
+                    setUpdateData({
+                        mandatory: true,
+                        url: serverVersion.apk_url || serverVersion.update_url || '',
+                        message: serverVersion.release_notes || serverVersion.message || 'Please update your app',
+                        version_name: serverVersion.version_name || '',
+                        title: 'Update Available'
+                    });
+                    setVisible(true);
+                }
+            }
+        } catch (error) {
+            console.log("Update check failed:", error);
+        }
+    }, [CURRENT_VERSION_CODE]);
+
+    useEffect(() => {
+        checkforUpdate();
+    }, [checkforUpdate]);
+
+    if (!visible || !updateData) return null;
 
     const { mandatory, url, message, version_name, title } = updateData;
 
@@ -15,11 +55,9 @@ const AppVersionUpdate = ({ visible, updateData, onDismiss }) => {
 
     const handleDismiss = () => {
         if (mandatory) {
-            // If mandatory, back button acts as exit or do nothing? 
-            // Usually we want to force update, so maybe exit app or just don't dismiss.
             BackHandler.exitApp();
         } else {
-            onDismiss();
+            setVisible(false);
         }
     };
 
