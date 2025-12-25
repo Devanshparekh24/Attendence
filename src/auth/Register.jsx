@@ -102,6 +102,10 @@ const Register = () => {
                     autoCorrect={false}
                     editable={!loading}
                   />
+                  
+                  <Text className="text-sm  text-gray-500 mb-2">
+                    Password must be at least 5 characters long
+                  </Text>
                   <TouchableOpacity
                     onPress={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-9"

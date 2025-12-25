@@ -28,6 +28,15 @@ const LoginButton = () => {
             Alert.alert('Validation Error', 'Please enter your password');
             return;
         }
+        if (password.length < 5) {
+            Alert.alert(
+                "Weak Password",
+                "Password must be at least 5 characters long"
+            );
+            return;
+        }
+
+
 
         setLoading(true);
 
@@ -72,6 +81,11 @@ const LoginButton = () => {
 
 
                 navigation.replace('MainApp');
+
+
+                //Reset fields
+                setEmployeeId('');
+                setPassword('');
 
             } else {
                 Alert.alert("Login Failed", response.message || "Invalid credentials");

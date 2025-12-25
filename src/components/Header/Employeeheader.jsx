@@ -4,7 +4,7 @@ import React from 'react';
 const EmployeeHeader = ({ employee }) => {
 
     return (
-        <View className="bg-primary-500 shadow-md p-6 rounded-b-3xl pb-24">
+        <View className="bg-primary-600 shadow-md p-6 rounded-b-3xl pb-24">
 
             <Text className="text-white text-2xl font-bold">
                 Welcome Back ✌

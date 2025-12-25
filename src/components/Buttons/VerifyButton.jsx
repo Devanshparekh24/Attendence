@@ -27,17 +27,38 @@ const VerifyButton = () => {
             Alert.alert(
                 "Password Mismatch",
                 "Password and Confirm Password do not match"
+
             );
+            return;
         }
     }
     const handleEmployeeidVerify = async () => {
         try {
 
-            
             if (!employeeId) {
                 Alert.alert("Missing Employee ID");
                 return;
             }
+
+            if (!confirmPassword) {
+                Alert.alert("Missing Confirm Password");
+                return;
+            }
+
+            if (password.length < 5) {
+                Alert.alert(
+                    "Weak Password",
+                    "Password must be at least 5 characters long"
+                );
+                return;
+            }
+            if (password !== confirmPassword) {
+                Alert.alert("Password Mismatch", "Password and Confirm Password do not match");
+                return;
+            }
+
+
+
             //Clear previous OTP
             setOtp(['', '', '', '', '', '']);
             const response = await ApiService.verifyUser({ emp_code: employeeId });

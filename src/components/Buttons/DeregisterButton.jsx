@@ -7,7 +7,7 @@ import { ApiService } from '../../backend';
 const DeregisterButton = () => {
     const navigation = useNavigation();
     const route = useRoute();
-    const { otp, employeeId, timer } = useAuth();
+    const { otp, employeeId, timer, setEmployeeId, setPassword, setConfirmPassword } = useAuth();
     const [loading, setLoading] = useState(false);
 
     // Get OTP sent from previous screen
@@ -39,8 +39,8 @@ const DeregisterButton = () => {
 
             // Call API to Deregister
             const response = await ApiService.deRegisterDevice({ emp_code: employeeId });
-
             if (response.success) {
+
                 Alert.alert("Success", "Device deregistered successfully.", [
                     {
                         text: "OK",
@@ -49,7 +49,12 @@ const DeregisterButton = () => {
                             navigation.reset({
                                 index: 0,
                                 routes: [{ name: 'Login' }],
+
                             });
+                            //Reset fields        
+                            setConfirmPassword('');
+                            setEmployeeId('');
+                            setPassword('');
                         }
                     }
                 ]);

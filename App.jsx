@@ -22,27 +22,32 @@ const App = () => {
   const appState = useRef(AppState.currentState);
   const navigationRef = useNavigationContainerRef();
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        if (navigationRef.isReady()) {
+useEffect(() => {
+  const subscription = AppState.addEventListener('change', nextAppState => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      if (navigationRef.isReady()) {
+        const currentRoute = navigationRef.getCurrentRoute()?.name;
+
+        // ✅ Do NOT reset if we are on OtpScreen or DeRegisterOtp
+        if (currentRoute !== 'OtpScreen' && currentRoute !== 'DeRegisterOtp' && currentRoute !== 'Login' && currentRoute !== 'Register') {
           navigationRef.reset({
             index: 0,
             routes: [{ name: 'Biometric' }],
           });
         }
       }
+    }
 
-      appState.current = nextAppState;
-    });
+    appState.current = nextAppState;
+  });
 
-    return () => {
-      subscription.remove();
-    };
-  }, [navigationRef]);
+  return () => {
+    subscription.remove();
+  };
+}, [navigationRef]);
 
   return (
     <SafeAreaProvider>

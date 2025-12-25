@@ -1,5 +1,5 @@
 // App constants
-export const APP_NAME = 'Attendence';
+export const APP_NAME = 'Attendance';
 
 // Colors
 export const COLORS = {

@@ -116,7 +116,7 @@ const Login = () => {
               </View>
 
               {/* Forgot Password Link */}
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={handleForgotPassword}
                 className="self-end mb-6"
                 disabled={loading}
@@ -124,7 +124,7 @@ const Login = () => {
                 <Text className="text-sm font-semibold text-blue-600">
                   Forgot Password?
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               {/* Login Button */}
               <LoginButton />
