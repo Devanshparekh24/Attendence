@@ -45,15 +45,12 @@ const HomeScreen = () => {
                 // LOG FOR DEBUGGING
                 console.log(`Update Check: Server (${serverVersionCode}) > Local (${CURRENT_VERSION_CODE})`);
 
-                // If backend says "Update available" (SP failed, old version) OR we confirm server value > current
-                if (response.message === "Update available" || serverVersionCode > CURRENT_VERSION_CODE) {
+                // If backend returns data, comparing versions
+                if (serverVersionCode > CURRENT_VERSION_CODE) {
                     console.log(`Update Check: Server (${serverVersionCode}) > Local (${CURRENT_VERSION_CODE}) -> SHOW MODAL`);
 
-                    // If response.message is "Update available", it means the SP rejected the current version, so it's MANDATORY.
-                    const isMandatory = response.message === "Update available" || serverVersion.mandatory;
-
                     setUpdateData({
-                        mandatory: isMandatory,
+                        mandatory: true, // User requested 'exit' on cancel, implying mandatory.
                         url: serverVersion.apk_url || serverVersion.update_url || '',
                         message: serverVersion.release_notes || serverVersion.message || 'Please update your app',
                         version_name: serverVersion.version_name || '',
