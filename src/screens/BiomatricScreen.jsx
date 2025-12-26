@@ -7,17 +7,22 @@ import Applogo from '../assets/images/Attendece_App_logo.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
 import CustomAlert from '../utils/CustomAlert';
-
+import useStoreAuthData from '../hooks/storeAuthData';
 
 const BiometricScreen = ({ navigation }) => {
+
+
+
     const [biometricAvailable, setBiometricAvailable] = useState(false);
-    const rnBiometrics = new ReactNativeBiometrics();
+    const rnBiometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true });
     const {
         employeeId,
         setEmployeeId,
         loginUser,   // ✅ ADD THIS
 
     } = useAuth();
+
+    const storeAuthData = useStoreAuthData();
 
     useEffect(() => {
         rnBiometrics.isSensorAvailable()
@@ -35,70 +40,21 @@ const BiometricScreen = ({ navigation }) => {
             });
     }, []);
 
-    
-
     const handleBiometricAuth = async () => {
         try {
             const { success } = await rnBiometrics.simplePrompt({
                 promptMessage: 'Confirm identity',
             });
-            
+
             if (!success) {
                 console.log('❌ User cancelled biometric');
                 BackHandler.exitApp();
                 return;
             }
 
-            console.debug('✅ Biometric success');
+            console.log('✅ Biometric success');
 
-            // 🔍 Read AsyncStorage ONCE
-            const storedData = await AsyncStorage.getItem('userData');
-            console.log('📦 AsyncStorage userData:', storedData);
-
-            if (!storedData) {
-                // 🔴 No stored user → Login
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                });
-                return;
-            }
-
-            // 🟢 Safe parse
-            const parsedData = JSON.parse(storedData);
-            console.log('👤 Employee ID:', parsedData.emp_code);
-
-            // 🟢 Update context
-            setEmployeeId(parsedData.emp_code);
-
-            const response = await loginUser(
-                parsedData.emp_code,
-                parsedData.emp_pass   // ⚠️ make sure key name is correct
-            );
-
-            if (response.success) {
-                setEmployeeId(parsedData.emp_code);
-
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'MainApp' }],
-                });
-            } else {
-                console.log('❌ Stored credentials invalid');
-
-                CustomAlert.alert(
-                'Login Failed',
-                response.message || 'Invalid credentials'
-                );
-                // optional: clear storage
-                // await AsyncStorage.removeItem('userData');
-
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Login' }],
-                });
-            }
-
+            await storeAuthData();
 
         } catch (error) {
             console.log('❌ Biometric error:', error);
@@ -106,29 +62,37 @@ const BiometricScreen = ({ navigation }) => {
         }
     };
 
-
-    const handleExist = () => {
+    const handleLoginwihoutbiomatric = async () => {
 
         try {
-            BackHandler.exitApp();
+
+            await storeAuthData();
 
         } catch (error) {
-            console.log(error);
+            console.log('❌ Biometric error:', error);
+            BackHandler.exitApp();
         }
+    }
 
-    };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="flex-1 justify-center items-center px-6">
+
+                <Image
+                    source={Applogo}
+                    className="w-24 h-24 mb-4"
+                    resizeMode="contain"
+                />
                 <Text className="text-2xl font-bold mb-5">Attendance App</Text>
 
                 {!biometricAvailable ? (
                     <View className="items-center w-full">
                         <Text className="text-base text-gray-800 mb-5 text-center">
-                            Biometric not available on this device.
+                            Biometric authentication not available on this device.
                         </Text>
-                        <Button title="Exist" onPress={handleExist} />
+                        <Button title="Continue" onPress={handleLoginwihoutbiomatric} />
+
                     </View>
                 ) : (
                     <View className="items-center w-full">

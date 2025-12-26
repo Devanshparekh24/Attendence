@@ -61,7 +61,6 @@ const DeRegisterOtp = () => {
 
     const handleResend = async () => {
         try {
-            setOtp(['', '', '', '', '', '']);
             inputRefs.current[0]?.focus();
             setTimer(120); // Reset timer
 
