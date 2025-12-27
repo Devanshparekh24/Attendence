@@ -96,11 +96,7 @@ const BiometricScreen = ({ navigation }) => {
                     </View>
                 ) : (
                     <View className="items-center w-full">
-                        <Image
-                            source={Applogo}
-                            className="w-24 h-24 mb-4"
-                            resizeMode="contain"
-                        />
+                      
                         <Text className="text-base text-gray-800 mb-5 text-center">
                             Authenticate to continue
                         </Text>
