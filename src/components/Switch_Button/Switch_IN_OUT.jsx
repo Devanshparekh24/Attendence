@@ -23,7 +23,6 @@ const Switch_IN_OUT = () => {
   } = useLocation();
   const { employeeId } = useAuth();
 
-
   const RefreshAtt = useGetCheckInOut();
 
   // Get Current Location wrapped in Promise
@@ -124,7 +123,7 @@ const Switch_IN_OUT = () => {
       console.error("Check-In Error:", error);
       setError(error.message);
 
-      Alert.alert("Error", error.message);
+      Alert.alert("Warning", error.message);
     } finally {
       setLoading(false);
     }
@@ -187,12 +186,12 @@ const Switch_IN_OUT = () => {
         console.log("Check IN");
         setIsCheckedIn(true);
 
-        await handleCheckIn();  
+        await handleCheckIn();
       } else {
         console.log("Check Out");
         setIsCheckedIn(false);
 
-        await handleCheckOut();  
+        await handleCheckOut();
       }
 
       console.log("🔄 Refreshing attendance");

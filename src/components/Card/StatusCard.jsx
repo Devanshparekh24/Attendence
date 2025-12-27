@@ -37,7 +37,7 @@ const StatusCard = () => {
 
           <Text className="mt-2 text-gray-600">
             {/* optional message */}
-            {checkOutTime ? 'Today Attendance completed' : ''}
+            {checkOutTime ? 'Today Session completed' : ''}
           </Text>
 
         </View>
